@@ -1,0 +1,60 @@
+<project name="BarPush">
+
+ <target name="run">
+   <git command = "init">
+    <args>
+        <arg value = "/home/spasula/GITREPOSITORY/PBC" />
+    </args>
+   </git> 
+   <git command = "add">
+    <args>
+        <arg value = "/home/spasula/GITREPOSITORY/PBC/*.bar" />
+    </args>
+   </git> 
+   <git command = "add">
+    <args>
+        <arg value = "/home/spasula/GITREPOSITORY/PBC/*.bar" />
+    </args>
+	<git command = "commit">
+	  <args>
+        <arg value = "-m" />
+		<arg value = "This is bar commiting message" />
+      </args>
+    <git>
+   <git command = "push">
+	  <args>
+        <arg value = "origin" />
+      </args>	 
+   </git>   
+ </target>
+ 
+</project>
+
+ <target name="artifactCreation" depends="clean">
+  <echo>This target is for artifact creation</echo>
+ </target>
+
+ <target name="run" depends="artifactCreation">
+  <echo>This is the final target is for running </echo>
+ </target>
+ 
+ </project>
+ 
+ 
+ 
+ 
+ git init /home/spasula/GITREPOSITORY/PBC
+
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/SureshPasula/prolifics.git
+git push -u origin master
+
+
+
+<git command = "clone">
+    <args>
+        <arg value = "git://github.com/280north/ojunit.git" />
+        <arg value = "ojunit" />
+    </args>
+</git> 
