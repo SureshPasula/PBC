@@ -1,0 +1,31 @@
+/*
+Sample program for use with IBM Integration Bus
+© Copyright International Business Machines Corporation 2003, 2010
+Licensed Materials - Property of IBM
+*/
+
+CREATE FILTER MODULE ScribblePublish_Filter
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		IF Properties.Topic='scribble/coords' THEN
+			RETURN TRUE;
+			ELSE
+		RETURN FALSE;
+		END IF;
+	END;
+END MODULE;
+
+
+CREATE COMPUTE MODULE ScribblePublish_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+	SET OutputRoot=InputRoot;
+	CREATE LASTCHILD OF Environment DOMAIN 'XMLNSC' PARSE(InputRoot.BLOB.BLOB);
+	SET Environment.XMLNSC.coords.x1 = 400-CAST(Environment.XMLNSC.coords.x1 AS INTEGER);
+	SET Environment.XMLNSC.coords.x2 = 400-CAST(Environment.XMLNSC.coords.x2 AS INTEGER);
+	SET Environment.XMLNSC.coords.y1 = 140-CAST(Environment.XMLNSC.coords.y1 AS INTEGER);
+	SET Environment.XMLNSC.coords.y2 = 140-CAST(Environment.XMLNSC.coords.y2 AS INTEGER);
+	SET OutputRoot.BLOB.BLOB = ASBITSTREAM (Environment.XMLNSC);	
+	RETURN TRUE;
+	END;
+END MODULE;
