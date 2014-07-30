@@ -17,7 +17,7 @@
    <echo>This is for bar file sending to the git repository</echo>
    <git command = "init">
     <args>
-        <arg value = "/home/spasula/GITREPOSITORY/PBC.git" />
+        <arg value = "/home/spasula/GITREPOSITORY/PBC" />
     </args>
    </git> 
    <git command = "add">
