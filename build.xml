@@ -9,7 +9,7 @@
  </target>
 
  <target name="run" depends="artifactCreation">
-  <echo>This is the final target is for running the </echo>
+  <echo>This is the final target is for running </echo>
  </target>
  
  </project>
