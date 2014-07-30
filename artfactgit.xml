@@ -2,6 +2,12 @@
 
  <target name="run">
    <sequential>
+   <git command = "clone">
+    <args>
+	    <arg value = "https://github.com/SureshPasula/PBC.git" />
+        <arg value = "/home/spasula/GITREPOSITORY/PBC" />
+    </args>
+   </git> 
    <echo>This is for bar file sending to the git repository</echo>
    <git command = "init">
     <args>
