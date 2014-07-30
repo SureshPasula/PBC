@@ -3,7 +3,7 @@
  <target name="run">
    <git command = "init">
     <args>
-        <arg value = "/home/spasula/GITREPOSITORY/PBC" />
+        <arg value = "/home/spasula/GITREPOSITORY/PBC.git" />
     </args>
    </git> 
    <git command = "add">
@@ -30,15 +30,6 @@
  
 </project>
 
- <target name="artifactCreation" depends="clean">
-  <echo>This target is for artifact creation</echo>
- </target>
-
- <target name="run" depends="artifactCreation">
-  <echo>This is the final target is for running </echo>
- </target>
- 
- </project>
  
  
  
