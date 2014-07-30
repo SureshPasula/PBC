@@ -31,6 +31,7 @@
 	<git command = "commit">
 	  <args>
         <arg value = "-m" />
+		<arg value = " " />
 		<arg value = "This is bar commiting message" />
       </args>
     <git>
