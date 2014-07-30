@@ -1,6 +1,18 @@
 <project name="BarPush">
 
  <target name="run">
+     <macrodef name="git">
+     <attribute name="command" />
+     <attribute name="dir" default="" />
+     <element name="args" optional="true" />
+     <sequential>
+      <echo message="git @{command}" />
+      <exec executable="git" dir="@{dir}">
+         <arg value="@{command}" />
+       <args/>
+      </exec>
+     </sequential>
+   </macrodef>
    <sequential>
    <git command = "clone">
     <args>
