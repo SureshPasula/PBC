@@ -1,6 +1,7 @@
 <project name="BarPush">
 
  <target name="run">
+   <echo>This is for bar file sending to the git repository</echo>
    <git command = "init">
     <args>
         <arg value = "/home/spasula/GITREPOSITORY/PBC.git" />
