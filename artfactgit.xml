@@ -24,7 +24,7 @@
         <arg value = "-m" />
 		<arg value = "This is bar file commiting message" />
       </args>
-    <git>
+    </git>
    <git command = "push">
 	  <args>
         <arg value = "origin" />
