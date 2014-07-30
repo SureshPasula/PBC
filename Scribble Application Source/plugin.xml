@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin
+   id="com.ibm.etools.mft.samples.scribble.res"
+   name="%Plugin.name"
+   version="6.0.0"
+   provider-name="IBM">
+
+   <runtime>
+      <library name="plugin.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+   <requires>
+      <import plugin="com.ibm.etools.mft.eou"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.swt"/>
+      <import plugin="com.ibm.mq.runtime"/>
+   </requires>
+</plugin>
