@@ -1,0 +1,15 @@
+<project name="AftifactCreationTesting">
+
+ <target name="clean">
+  <echo>This target represents clean target</echo>
+ </target>
+
+ <target name="artifactCreation" depends="clean">
+  <echo>This target is for artifact creation</echo>
+ </target>
+
+ <target name="run" depends="artifactCreation">
+  <echo>This is the final target is for running the </echo>
+ </target>
+ 
+ </project>
