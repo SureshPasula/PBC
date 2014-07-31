@@ -6,15 +6,20 @@
      <attribute name="dir" default="" />
      <element name="args" optional="true" />
      <sequential>
-      <echo message="git @{command}" />
       <exec executable="git" dir="@{dir}">
          <arg value="@{command}" />
        <args/>
       </exec>
      </sequential>
-   </macrodef>
+     </macrodef>
    <sequential>
    <echo>This is for bar file sending to the git repository</echo>
+   <git command = "clone">
+    <args>
+	    <arg value = "https://github.com/SureshPasula/PBC.git" />
+        <arg value = "/home/spasula/GITREPOSITORY/PBC" />
+    </args>
+   </git> 
    <git command = "init">
     <args>
         <arg value = "/home/spasula/GITREPOSITORY/PBC" />
@@ -34,7 +39,6 @@
    <git command = "push">
 	  <args>
         <arg value = "origin" />
-		<arg value = "https://github.com/SureshPasula/PBC.git" />
       </args>	 
    </git> 
  </sequential>   
