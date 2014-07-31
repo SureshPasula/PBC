@@ -26,8 +26,8 @@
    </git>
    <git command = "add">
      <args>
-	    <arg value = "-i"/>
-        <arg value = "*.bar"/>
+	    <arg value = "-A"/>
+        <arg value = "/home/spasula/artifact"/>
 	 </args>	
     </git> 
 	<git command = "commit">
