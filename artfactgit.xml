@@ -53,7 +53,7 @@
     </git>
 	<git command = "pull">
 	  <args>
-        <arg value = "github" />
+        <arg value = "origin" />
 		<arg value = "master"/>
       </args>
    </git>
@@ -68,7 +68,7 @@
    <git command = "push">
 	  <args>
         <arg value = "-f" />
-		<arg value = "origin" />
+		<arg value = "github" />
 		<arg value = "master"/>
       </args>	 
    </git> 
