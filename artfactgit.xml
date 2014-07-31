@@ -22,7 +22,7 @@
    <git command = "add">
     <args>
 	    <arg value = "-f" />
-        <arg value = "scribble.bar" />
+        <file value = "scribble.bar"/>
     </args>
    </git> 
 	<git command = "commit">
