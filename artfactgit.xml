@@ -35,6 +35,7 @@
    <git command = "push">
 	  <args>
         <arg value = "origin" />
+		<arg value = "master" />
       </args>	 
    </git> 
  </sequential>   
