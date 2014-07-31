@@ -24,7 +24,7 @@
 	    <arg value = "--bare"/>
     </args>
    </git> 
-   <copy file="/home/spasula/artifact/scribble.bar" todir="./"/>
+   <copy file="/home/spasula/artifact/scribble.bar" todir="./PBC"/>
    <git command = "add">
      <args>
 	    <arg value = "-A"/>
