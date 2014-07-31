@@ -18,7 +18,7 @@
    <git command = "add">
      <args>
 	    <arg value = "-f"/>
-        <arg value = "scribble.bar"/>
+        <arg value = "*.bar"/>
 	 </args>	
     </git> 
 	<git command = "commit">
