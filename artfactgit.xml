@@ -51,7 +51,7 @@
 		<arg value = "This is bar file commiting message"/>
       </args>
     </git>
-	<git command = "merge">
+	<git command = "pull">
 	  <args>
         <arg value = "origin" />
 		<arg value = "master"/>
