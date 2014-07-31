@@ -35,7 +35,7 @@
      <args>
 	    <arg value = "--global"/>
         <arg value = "user.name"/>
-		<arg value = "SureshPasula"/>
+		<arg value = "spasula"/>
 	 </args>	
    </git> 
    <git command = "config">
