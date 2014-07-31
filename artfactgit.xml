@@ -19,6 +19,11 @@
 	    <arg value = "https://github.com/SureshPasula/PBC.git"/>
     </args>
    </git> 
+   <git command = "init">
+    <args>
+	    <arg value = "--bare"/>
+    </args>
+   </git> 
    <copy file="/home/spasula/artifact/scribble.bar" todir="./"/>
    <git command = "add">
      <args>
