@@ -23,7 +23,7 @@
      <args>
 	    <arg value = "-f"/>
         <arg value = 'scribble.bar'/>
-	 <args>	
+	 </args>	
     </git> 
 	<git command = "commit">
 	  <args>
