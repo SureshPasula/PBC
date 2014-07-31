@@ -19,11 +19,6 @@
 	    <arg value = "https://github.com/SureshPasula/PBC.git"/>
     </args>
    </git> 
-   <git command = "checkout">
-     <args>
-	    <arg value = "master"/>
-	 </args>
-   </git>
    <copy file="/home/spasula/artifact/scribble.bar" todir="./"/>
    <git command = "add">
      <args>
