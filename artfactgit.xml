@@ -27,7 +27,7 @@
    </git> 
    <git command = "add">
     <args>
-        <arg value = "/home/spasula/GITREPOSITORY/PBC*.bar" />
+        <arg value = "/home/spasula/GITREPOSITORY/PBC.git/*.bar" />
     </args>
    </git> 
 	<git command = "commit">
