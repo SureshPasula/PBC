@@ -61,7 +61,7 @@
 	  <args>
         <arg value = "add" />
 		<arg value = "origin" />
-		<arg value = "git@github.com:SureshPasula/PBC.git"/>
+		<arg value = "https://github.com/SureshPasula/PBC.git"/>
 		<arg value = "master"/>
       </args>	 
    </git> 
