@@ -1,6 +1,6 @@
 <project name="BarPush">
 
- <target name="run">
+  <target name="run">
      <macrodef name="git">
      <attribute name="command" />
      <attribute name="dir" default="" />
@@ -12,18 +12,17 @@
       </exec>
      </sequential>
      </macrodef>
-   <sequential>
+  <sequential>
    <echo>This is for bar file sending to the git repository</echo>
    <git command = "clone">
     <args>
 	    <arg value = "https://github.com/SureshPasula/PBC.git" />
     </args>
    </git> 
-   <git command = "init">
-   </git> 
+   <git command = "init"/>
    <git command = "add">
     <args>
-        <arg value = "/home/spasula/GITREPOSITORY/PBC.git/*.bar" />
+        <arg value = "scribble.bar" />
     </args>
    </git> 
 	<git command = "commit">
@@ -35,8 +34,6 @@
    <git command = "push">
 	  <args>
         <arg value = "origin" />
-		<arg value = "https://github.com/SureshPasula/PBC.git" />
-		<arg value = "master" />
       </args>	 
    </git> 
  </sequential>   
