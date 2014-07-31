@@ -12,7 +12,7 @@
       </exec>
      </sequential>
      </macrodef>
-  <sequential>
+   <sequential>
    <echo>This is for bar file sending to the git repository</echo>
    <git command = "clone">
     <args>
@@ -24,10 +24,11 @@
 	    <arg value = "master"/>
 	 </args>
    </git>
+   <move file="/home/spasula/artifact/scribble.bar" todir="./"/>
    <git command = "add">
      <args>
 	    <arg value = "-A"/>
-        <arg value = "/home/spasula/artifact"/>
+        <arg value = "scribble.bar"/>
 	 </args>	
     </git> 
 	<git command = "commit">
