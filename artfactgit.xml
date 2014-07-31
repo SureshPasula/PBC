@@ -32,7 +32,7 @@
 		<arg value = "This is bar file commiting message"/>
       </args>
     </git>
-	<git command = "pull">
+	<git command = "merge">
 	  <args>
         <arg value = "origin" />
 		<arg value = "master"/>
@@ -47,7 +47,7 @@
    </git> 
    <git command = "push">
 	  <args>
-        <arg value = "-u" />
+        <arg value = "-f" />
 		<arg value = "origin" />
 		<arg value = "master"/>
       </args>	 
