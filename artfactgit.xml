@@ -20,6 +20,7 @@
     </args>
    </git> 
    <git command = "init"/>
+   </git>
    <git command = "add">
     <args>
 	    <arg value = "-f" />
