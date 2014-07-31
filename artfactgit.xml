@@ -39,6 +39,7 @@
    <git command = "push">
 	  <args>
         <arg value = "origin" />
+		<arg value = "https://github.com/SureshPasula/PBC.git" />
       </args>	 
    </git> 
  </sequential>   
