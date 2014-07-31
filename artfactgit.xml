@@ -24,7 +24,7 @@
 	    <arg value = "master"/>
 	 </args>
    </git>
-   <move file="/home/spasula/artifact/scribble.bar" todir="./"/>
+   <copy file="/home/spasula/artifact/scribble.bar" todir="./"/>
    <git command = "add">
      <args>
 	    <arg value = "-A"/>
@@ -35,6 +35,12 @@
 	  <args>
         <arg value = "-m" />
 		<arg value = "This is bar file commiting message"/>
+      </args>
+    </git>
+	<git command = "merge">
+	  <args>
+        <arg value = "origin" />
+		<arg value = "branch"/>
       </args>
     </git>
    <git command = "push">
