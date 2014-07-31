@@ -14,7 +14,16 @@
      </macrodef>
   <sequential>
    <echo>This is for bar file sending to the git repository</echo>
-   <git command = "init"/>
+   <git command = "clone">
+    <args>
+	    <arg value = "https://github.com/SureshPasula/PBC.git"/>
+    </args>
+   </git> 
+   <git command = "checkout">
+     <args>
+	    <arg value = "master"/>
+	 </args>
+   </git>
    <git command = "add">
      <args>
 	    <arg value = "-f"/>
@@ -30,7 +39,7 @@
    <git command = "push">
 	  <args>
         <arg value = "origin" />
-		<arg value = "https://github.com/SureshPasula/PBC.git/master"/>
+		<arg value = "https://github.com/SureshPasula/PBC.git"/>
       </args>	 
    </git> 
  </sequential>   
