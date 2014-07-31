@@ -17,13 +17,9 @@
    <git command = "clone">
     <args>
 	    <arg value = "https://github.com/SureshPasula/PBC.git" />
-        <arg value = "/home/spasula/GITREPOSITORY/PBC" />
     </args>
    </git> 
    <git command = "init">
-    <args>
-        <arg value = "/home/spasula/GITREPOSITORY/PBC" />
-    </args>
    </git> 
    <git command = "add">
     <args>
