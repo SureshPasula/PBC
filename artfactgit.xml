@@ -28,7 +28,7 @@
    <git command = "add">
      <args>
 	    <arg value = "-A"/>
-        <arg value = "scribble.bar"/>
+        <arg value = "./PBC/scribble.bar"/>
 	 </args>	
    </git> 
    <git command = "config">
