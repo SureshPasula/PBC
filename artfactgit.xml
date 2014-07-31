@@ -14,26 +14,23 @@
      </macrodef>
   <sequential>
    <echo>This is for bar file sending to the git repository</echo>
-   <git command = "clone">
-    <args>
-	    <arg value = "https://github.com/SureshPasula/PBC.git" />
-    </args>
-   </git>
+   <git command = "init"/>
    <git command = "add">
      <args>
 	    <arg value = "-f"/>
-        <arg value = 'scribble.bar'/>
+        <arg value = "scribble.bar"/>
 	 </args>	
     </git> 
 	<git command = "commit">
 	  <args>
         <arg value = "-m" />
-		<arg value = "This is bar file commiting message" />
+		<arg value = "This is bar file commiting message"/>
       </args>
     </git>
    <git command = "push">
 	  <args>
         <arg value = "origin" />
+		<arg value = "https://github.com/SureshPasula/PBC.git"/>
 		<arg value = "master" />
       </args>	 
    </git> 
