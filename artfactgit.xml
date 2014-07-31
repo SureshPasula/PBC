@@ -68,7 +68,7 @@
    <git command = "push">
 	  <args>
         <arg value = "-f" />
-		<arg value = "origin" />
+		<arg value = "https://github.com" />
 		<arg value = "master"/>
       </args>	 
    </git> 
