@@ -35,7 +35,7 @@
 	<git command = "merge">
 	  <args>
         <arg value = "origin" />
-		<arg value = "branch"/>
+		<arg value = "master"/>
       </args>
     </git>
    <git command = "push">
