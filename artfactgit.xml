@@ -20,11 +20,11 @@
     </args>
    </git>
    <git command = "add">
-    <args>
-	    <arg value = "-f" />
-        <file value = "scribble.bar"/>
-    </args>
-   </git> 
+     <args>
+	    <arg value = "-f"/>
+        <arg value = 'scribble.bar'/>
+	 <args>	
+    </git> 
 	<git command = "commit">
 	  <args>
         <arg value = "-m" />
