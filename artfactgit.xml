@@ -25,8 +25,22 @@
 	    <arg value = "-A"/>
         <arg value = "scribble.bar"/>
 	 </args>	
-    </git> 
-	<git command = "commit">
+   </git> 
+   <git command = "config">
+     <args>
+	    <arg value = "--global"/>
+        <arg value = "user.name"/>
+		<arg value = "SureshPasula"/>
+	 </args>	
+   </git> 
+   <git command = "config">
+     <args>
+	    <arg value = "--global"/>
+        <arg value = "user.email"/>
+		<arg value = "suresh.pasula@prolifics.com"/>
+	 </args>	
+   </git> 
+   <git command = "commit">
 	  <args>
         <arg value = "-m" />
 		<arg value = "This is bar file commiting message"/>
@@ -37,7 +51,7 @@
         <arg value = "origin" />
 		<arg value = "master"/>
       </args>
-    </git>
+   </git>
    <git command = "remote">
 	  <args>
         <arg value = "add" />
