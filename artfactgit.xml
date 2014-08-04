@@ -47,7 +47,7 @@
 		<arg value = "This is bar file commiting message"/>
       </args>
     </git>
-   <git command = "push">
+   <git command = "mirror-push">
 	  <args>
         <arg value = "-f" />
 		<arg value = "origin"/>
