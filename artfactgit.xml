@@ -17,6 +17,7 @@
    <git command = "clone">
     <args>
 	    <arg value = "ssh://SureshPasula@github.com/PBC.git"/>
+		<arg value = "master"/>
     </args>
    </git> 
    <copy file="/home/spasula/artifact/scribble.bar" todir="./PBC"/>
