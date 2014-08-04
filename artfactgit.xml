@@ -52,18 +52,6 @@
 		<arg value = "master"/>
       </args>
    </git>
-   <git command = "remote">
-	  <args>
-        <arg value = "add" />
-		<arg value = "origin" />
-		<arg value = "https://github.com/SureshPasula/PBC.git"/>
-      </args>	 
-   </git> 
-     <git command = "reset">
-	  <args>
-        <arg value = "--hard" />
-      </args>	 
-   </git> 
    <git command = "push">
 	  <args>
         <arg value = "-f" />
