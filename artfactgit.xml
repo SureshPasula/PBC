@@ -70,6 +70,8 @@
 		<arg value = "origin"/>
       </args>	 
    </git> 
+    <git command = "log">	 
+    </git> 
  </sequential>   
  </target>
  
