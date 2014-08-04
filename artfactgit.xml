@@ -52,10 +52,10 @@
 		<arg value = "origin"/>
 		<arg value = "master"/>
       </args>	 
-   </git
+   </git>
    <git command = "status">
 	  <args>
-        <arg value = "scribble.bar" />
+        <arg value = "scribble.bar"/>
       </args>	 
    </git> 
     <git command = "log">	 
