@@ -47,11 +47,10 @@
 		<arg value = "This is bar file commiting message"/>
       </args>
     </git>
-   <git command = "mirror-push">
+   <git command = "push">
 	  <args>
-        <arg value = "-f" />
-		<arg value = "origin"/>
-		<arg value = "master"/>
+        <arg value = "--mirror" />
+		<arg value = "https://github.com/SureshPasula/PBC.git"/>
       </args>	 
    </git>
    <git command = "status">
