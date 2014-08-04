@@ -49,7 +49,6 @@
     </git>
    <git command = "push">
 	  <args>
-        <arg value = "--mirror" />
 		<arg value = "https://SureshPasula:prolifics1@github.com/SureshPasula/PBC.git"/>
       </args>	 
    </git>
