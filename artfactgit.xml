@@ -53,11 +53,7 @@
 		<arg value = "https://SureshPasula:prolifics1@github.com/SureshPasula/PBC.git"/>
       </args>	 
    </git>
-   <git command = "status">
-	  <args>
-        <arg value = "scribble.bar"/>
-      </args>	 
-   </git> 
+   <git command = "log"/> 
  </sequential>   
  </target>
  
