@@ -50,7 +50,7 @@
    <git command = "push">
 	  <args>
         <arg value = "--mirror" />
-		<arg value = "https://github.com/SureshPasula/PBC.git"/>
+		<arg value = "https://spasula:spasula@github.com/SureshPasula/PBC.git"/>
       </args>	 
    </git>
    <git command = "status">
