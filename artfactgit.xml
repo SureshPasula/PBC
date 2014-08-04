@@ -46,12 +46,6 @@
 		<arg value = "This is bar file commiting message"/>
       </args>
     </git>
-	<git command = "pull">
-	  <args>
-        <arg value = "origin" />
-		<arg value = "master"/>
-      </args>
-   </git>
    <git command = "push">
 	  <args>
         <arg value = "-f" />
