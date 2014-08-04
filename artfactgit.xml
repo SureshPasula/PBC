@@ -16,7 +16,7 @@
    <echo>This is for bar file sending to the git repository</echo>
    <git command = "clone">
     <args>
-	    <arg value = "https://github.com/SureshPasula/PBC.git"/>
+	    <arg value = "ssh://SureshPasula@github.com/PBC.git"/>
     </args>
    </git> 
    <copy file="/home/spasula/artifact/scribble.bar" todir="./PBC"/>
