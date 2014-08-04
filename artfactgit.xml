@@ -58,8 +58,6 @@
         <arg value = "scribble.bar"/>
       </args>	 
    </git> 
-    <git command = "log">	 
-    </git> 
  </sequential>   
  </target>
  
