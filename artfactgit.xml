@@ -14,6 +14,9 @@
      </macrodef>
    <sequential>
    <echo>This is for bar file sending to the git repository</echo>
+     <exec executable="/bin/bash">
+       <arg value="./git-clone.sh"/>
+     </exec>
    <git command = "clone">
     <args>
 	    <arg value = "ssh://SureshPasula@github.com/PBC.git"/>
