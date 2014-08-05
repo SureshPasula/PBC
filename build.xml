@@ -1,15 +1,1206 @@
-<project name="AftifactCreationTesting">
+<!--
+This file is copyright of Prolifics - (c) Prolifics 2013. All rights reserved. You are not permitted to make copy, modify, or redistribute this file.
 
- <target name="clean">
-  <echo>This target represents clean target</echo>
- </target>
+See the readme.txt file for further terms and conditions.
+-->
 
- <target name="artifactCreation" depends="clean">
-  <echo>This target is for artifact creation</echo>
- </target>
+<project name="build" default="specifyTarget">
 
- <target name="run" depends="artifactCreation">
-  <echo>This is the final target is for running </echo>
- </target>
- 
- </project>
+	<echo message="Import RTC tasks from ${RTC_BUILD_TOOLKIT}/BuildToolkitTaskDefs.xml" />
+	<import file="${RTC_BUILD_TOOLKIT}/BuildToolkitTaskDefs.xml" />
+
+	<target name="specifyTarget" depends="">
+		<fail message="No target specified. You need to specify either assembleAndDeployApp or overrideAndDeployApp as the target to run." />
+	</target>
+
+	<target name="assembleApp" depends="-init, -assembleApp, -storeApp" />
+
+	<target name="deployApp" depends="-init, -initAppDeploy, -deployApp, -deployAppProperties" />
+
+	<target name="deployAppOnlybars" depends="-init, -initAppDeploy, -deployApp" />
+
+	<target name="deployAppOnlyProperties" depends="-init, -deployAppProperties" />
+
+	<target name="assembleAndDeployApp" depends="-init, -initAppDeploy, -assembleApp, -storeApp, -deployApp, -deployAppProperties" />
+
+	<target name="overrideAndDeployApp" depends="-init, -initAppDeploy, -overrideApp, -deployApp, -deployAppProperties" />
+
+	<target name="assembleOverrideAndDeployApp" depends="-init, -initAppDeploy, -assembleApp, -storeApp, -overrideApp, -deployApp, -deployAppProperties" />
+
+	<target name="-assembleApp" depends="">
+
+		<startBuildActivity label="Assemble the bars" activityIdProperty="creatingBars" autoComplete="true" buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" />
+
+		<for list="${bars.list}" param="barName" delimiter=";">
+
+			<sequential>
+
+				<!-- Check to see if the bar is in the use existing bar list -->
+
+				<var name="useExistingBar" unset="true" />
+				<var name="useExistingBar" value="FALSE" />
+
+				<for list="${useExistingBars.list}" param="useExistingBarName" delimiter=";">
+					<sequential>
+
+						<if>
+							<equals arg1="@{barName}" arg2="@{useExistingBarName}" />
+							<then>
+								<var name="useExistingBar" value="TRUE" />
+							</then>
+						</if>
+
+					</sequential>
+				</for>
+
+				<!-- Either assemble a new bar use the existing bar -->
+
+				<if>
+					<equals arg1="${useExistingBar}" arg2="FALSE" />
+					<then>
+
+						<var name="barDeployableFiles" unset="true" />
+						<var name="barTempDeployableFiles" unset="true" />
+						<var name="barProjects" unset="true" />
+						<var name="barTempProjects" unset="true" />
+						<var name="barApplications" unset="true" />
+						<var name="barTempApplications" unset="true" />
+						<var name="barLibrariesSwitch" unset="true" />
+						<var name="barTempLibrariesSwitch" unset="true" />
+
+						<if>
+							<isset property="bar.@{barName}.applications.list" />
+							<then>
+
+								<propertycopy property="barTempApplications" from="bar.@{barName}.applications.list" />
+								<propertyregex property="barApplications" override="true" input="${barTempApplications}" regexp=";" replace=" " defaultValue="${barTempApplications}" />
+
+							</then>
+							<else>
+
+								<propertycopy property="barTempProjects" from="bar.@{barName}.projects.list" />
+								<propertyregex property="barProjects" override="true" input="${barTempProjects}" regexp=";" replace=" " defaultValue="${barTempProjects}" />
+							</else>
+						</if>
+
+						<if>
+							<isset property="libraries.list" />
+							<then>
+								<if>
+									<equals arg1="${libraries.list}" arg2="" />
+									<then>
+
+										<fail message="Do not set libraries.list to an empty string. It must either have a value, or not be set at all." />
+									</then>
+								</if>
+
+								<var name="barTempLibrariesSwitch" value="-l ${libraries.list}" />
+								<propertyregex property="barLibrariesSwitch" override="true" input="${barTempLibrariesSwitch}" regexp=";" replace=" " defaultValue="${barTempLibrariesSwitch}" />
+
+							</then>
+							<else>
+
+								<var name="barLibrariesSwitch" value="" />
+							</else>
+						</if>
+
+						<if>
+							<isset property="bar.@{barName}.deployableFiles.list" />
+							<then>
+								<propertycopy property="barTempDeployableFiles" from="bar.@{barName}.deployableFiles.list" />
+								<propertyregex property="barDeployableFiles" override="true" input="${barTempDeployableFiles}" regexp=";" replace=" " defaultValue="${barTempDeployableFiles}" />
+							</then>
+						</if>
+
+						<startBuildActivity label="Assemble the @{barName} bar" parentActivityId="${creatingBars}" autoComplete="true" buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" />
+
+						<if>
+							<equals arg1="${PREVIEW}" arg2="Y" />
+							<then>
+
+								<echo message="NOTE: Running in preview mode - actions will be displayed only and not executed." />
+
+								<if>
+									<isset property="bar.@{barName}.applications.list" />
+									<then>
+
+										<echo message="PREVIEW: ./mqsicreatebar -data ${BUILD_SOURCE} -b ${BUILD_OUTPUT}/@{barName}.bar -a ${barApplications} -deployAsSource ${barLibrariesSwitch} -trace -v ${BUILD_LOGS}/assemble-@{barName}.log" />
+									</then>
+									<else>
+										<echo message="PREVIEW: ./mqsicreatebar -data ${BUILD_SOURCE} -b ${BUILD_OUTPUT}/@{barName}.bar -p ${barProjects} -o ${barDeployableFiles} ${barLibrariesSwitch} -deployAsSource -trace -v ${BUILD_LOGS}/assemble-@{barName}.log" />
+									</else>
+								</if>
+							</then>
+							<else>
+								<exec dir="./" executable="/bin/bash" output="${BUILD_LOGS}/IIBBuild0.@{barName}.log" failonerror="false" resultproperty="error.IIBBuild0.@{barName}">
+									<arg line=". ${MQSI_BIN}/mqsiprofile" />
+								</exec>
+
+								<if>
+									<isset property="bar.@{barName}.applications.list" />
+									<then>
+
+										<echo message="Building applications: ${barApplications}" />
+
+										<exec dir="./" executable="${IIT_BIN}/../mqsicreatebar" output="${BUILD_LOGS}/IIBBuild.@{barName}.log" failonerror="false" resultproperty="error.IIBBuild.@{barName}">
+											<arg line="-data ${BUILD_SOURCE} -b ${BUILD_OUTPUT}/@{barName}.bar -a ${barApplications} -deployAsSource ${barLibrariesSwitch} -trace -v ${BUILD_LOGS}/assemble-@{barName}.log" />
+										</exec>
+
+									</then>
+									<else>
+
+										<echo message="Building projects: ${barProjects} (with deployableFiles ${barDeployableFiles})" />
+
+										<exec dir="./" executable="${IIT_BIN}/../mqsicreatebar" output="${BUILD_LOGS}/IIBBuild.@{barName}.log" failonerror="false" resultproperty="error.IIBBuild.@{barName}">
+											<arg line="-data ${BUILD_SOURCE} -b ${BUILD_OUTPUT}/@{barName}.bar -p ${barProjects} -o ${barDeployableFiles} ${barLibrariesSwitch} -deployAsSource -trace -v ${BUILD_LOGS}/assemble-@{barName}.log" />
+										</exec>
+
+									</else>
+								</if>
+
+								<antcall target="-checkIIBErrors">
+									<param name="fileToCheck" value="${BUILD_LOGS}/assemble-@{barName}.log" />
+									<param name="fileToCheckLabel" value="Assemble @{barName} log file (with error description)." />
+								</antcall>
+
+								<logPublisher buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" verbose="true" filePath="${BUILD_LOGS}/assemble-@{barName}.log" label="Assemble @{barName} log file" />
+
+								<artifactFilePublisher buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" verbose="true" filePath="${BUILD_OUTPUT}/@{barName}.bar" label="@{barName} bar" />
+							</else>
+						</if>
+
+					</then>
+					<else>
+
+						<startBuildActivity label="Skipping assembly of the @{barName} bar as it appears in the useExistingBars.list property" parentActivityId="${creatingBars}" autoComplete="true" buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" />
+						<echo message="NOTE: Skipping assembly of the @{barName} bar as it appears in the useExistingBars.list property" />
+
+					</else>
+				</if>
+
+			</sequential>
+		</for>
+
+	</target>
+
+	<target name="-storeApp" depends="">
+
+		<if>
+			<isset property="ASSEMBLIES_COMPONENT" />
+			<then>
+
+				<startBuildActivity label="Store assembled artifacts in the ${ASSEMBLIES_COMPONENT} component" activityIdProperty="storeAssemblies" autoComplete="true" buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" />
+
+				<antcall target="-deliverArtifacts">
+					<param name="deliverToProject" value="${DEPLOYABLE_BARS}" />
+					<param name="deliverToComponent" value="${ASSEMBLIES_COMPONENT}" />
+					<param name="deliverComment" value="Storing bar files for build ${buildDefinitionId} ${buildLabel}." />
+				</antcall>
+
+			</then>
+			<else>
+				<echo message="NOTE: Not storing the assembly outputs as there is no ASSEMBLIES_COMPONENT property specified" />
+
+				<echo message="Copy output files to project" />
+
+				<if>
+					<not>
+						<available file="${DEPLOYABLE_BARS}" type="dir" />
+					</not>
+					<then>
+						<mkdir dir="${DEPLOYABLE_BARS}" />
+
+					</then>
+				</if>
+
+				<copy todir="${DEPLOYABLE_BARS}">
+					<fileset dir="${BUILD_OUTPUT}">
+						<include name="*.bar" />
+					</fileset>
+				</copy>
+			</else>
+		</if>
+
+	</target>
+
+	<target name="-overrideApp" depends="">
+
+		<startBuildActivity label="Override the bars' properties" activityIdProperty="overrideBars" autoComplete="true" buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" />
+
+		<for list="${bars.list}" param="barName" delimiter=";">
+
+			<sequential>
+
+				<!-- Apply general override -->
+
+				<var name="barApplications" unset="true" />
+				<var name="barProperties" unset="true" />
+
+				<if>
+					<isset property="bar.@{barName}.applications.list" />
+					<then>
+						<propertycopy property="barApplications" from="bar.@{barName}.applications.list" />
+					</then>
+				</if>
+
+				<if>
+					<isset property="bar.@{barName}.properties" />
+					<then>
+						<propertycopy property="barProperties" from="bar.@{barName}.properties" />
+
+						<startBuildActivity label="Overriding properties for @{barName} bar" parentActivityId="${overrideBars}" autoComplete="true" buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" />
+
+						<if>
+							<isset property="bar.@{barName}.applications.list" />
+							<then>
+
+								<for list="${bar.@{barName}.applications.list}" param="applicationName" delimiter=";">
+
+									<sequential>
+
+										<if>
+											<equals arg1="${PREVIEW}" arg2="Y" />
+											<then>
+
+												<echo message="PREVIEW: ./mqsiapplybaroverride -b ${DEPLOYABLE_BARS}/@{barName}.bar -k @{applicationName} -p ${BUILD_SOURCE}/${barProperties} -v ${BUILD_LOGS}/override-@{barName}.log" />
+											</then>
+											<else>
+												<exec dir="./" executable="${IIT_BIN}/../mqsiapplybaroverride" output="${BUILD_LOGS}/IIBOverride.@{barName}.log" failonerror="false" resultproperty="error.IIBOverride.@{barName}">
+													<arg line="-b ${DEPLOYABLE_BARS}/@{barName}.bar -k @{applicationName} -p ${BUILD_SOURCE}/${barProperties} -v ${BUILD_LOGS}/override-@{barName}.log" />
+												</exec>
+
+											</else>
+										</if>
+									</sequential>
+								</for>
+
+							</then>
+
+							<else>
+
+								<if>
+									<equals arg1="${PREVIEW}" arg2="Y" />
+									<then>
+										<echo message="PREVIEW: ./mqsiapplybaroverride -b ${DEPLOYABLE_BARS}/@{barName}.bar -p ${BUILD_SOURCE}/${barProperties} -v ${BUILD_LOGS}/override-@{barName}.log" />
+
+									</then>
+									<else>
+										<exec dir="./" executable="${IIT_BIN}/../mqsiapplybaroverride" output="${BUILD_LOGS}/IIBOverride.@{barName}.log" failonerror="false" resultproperty="error.IIBOverride.@{barName}">
+											<arg line="-b ${DEPLOYABLE_BARS}/@{barName}.bar -p ${BUILD_SOURCE}/${barProperties} -v ${BUILD_LOGS}/override-@{barName}.log" />
+										</exec>
+									</else>
+
+								</if>
+
+							</else>
+						</if>
+
+						<if>
+							<not>
+								<equals arg1="${PREVIEW}" arg2="Y" />
+							</not>
+							<then>
+
+								<antcall target="-checkIIBErrors">
+									<param name="fileToCheck" value="${BUILD_LOGS}/override-@{barName}.log" />
+									<param name="fileToCheckLabel" value="Override @{barName} log file (with error description)." />
+								</antcall>
+
+								<logPublisher buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" verbose="true" filePath="${BUILD_LOGS}/override-@{barName}.log" label="Override @{barName} log file" />
+
+								<artifactFilePublisher buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" verbose="true" filePath="${DEPLOYABLE_BARS}/@{barName}.bar" label="@{barName} bar (with override applied - ${barProperties})" />
+
+							</then>
+						</if>
+					</then>
+				</if>
+
+				<!-- Apply host-specific override -->
+
+				<for list="${IIB_HOSTS.list}" param="hostName" delimiter=";">
+
+					<sequential>
+
+						<var name="barProperties" unset="true" />
+
+						<if>
+							<isset property="bar.@{barName}.properties.@{hostName}" />
+							<then>
+
+								<propertycopy property="barProperties" from="bar.@{barName}.properties.@{hostName}" />
+
+								<startBuildActivity label="Overriding properties for @{barName} bar for host @{hostName}" parentActivityId="${overrideBars}" autoComplete="true" buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" />
+
+								<if>
+									<isset property="bar.@{barName}.applications.list" />
+									<then>
+
+										<for list="${bar.@{barName}.applications.list}" param="applicationName" delimiter=";">
+
+											<sequential>
+
+												<if>
+													<equals arg1="${PREVIEW}" arg2="Y" />
+													<then>
+
+														<echo message="PREVIEW: ./mqsiapplybaroverride -b ${DEPLOYABLE_BARS}/@{barName}.bar -k @{applicationName} -p ${BUILD_SOURCE}/${barProperties} -o ${DEPLOYABLE_BARS}/@{barName}.@{hostName}.bar -v ${BUILD_LOGS}/override-@{barName}.@{hostName}.log" />
+													</then>
+													<else>
+														<exec dir="./" executable="${IIT_BIN}/../mqsiapplybaroverride" output="${BUILD_LOGS}/IIBOverride.@{barName}.@{hostName}.log" failonerror="false" resultproperty="error.IIBOverride.@{barName}.@{hostName}">
+															<arg line="-b ${DEPLOYABLE_BARS}/@{barName}.bar -k @{applicationName} -p ${BUILD_SOURCE}/${barProperties} -o ${DEPLOYABLE_BARS}/@{barName}.@{hostName}.bar -v ${BUILD_LOGS}/override-@{barName}.@{hostName}.log" />
+														</exec>
+
+													</else>
+												</if>
+											</sequential>
+										</for>
+
+									</then>
+
+									<else>
+
+										<if>
+											<equals arg1="${PREVIEW}" arg2="Y" />
+											<then>
+												<echo message="PREVIEW: ./mqsiapplybaroverride -b ${DEPLOYABLE_BARS}/@{barName}.bar -p ${BUILD_SOURCE}/${barProperties} -o ${DEPLOYABLE_BARS}/@{barName}.@{hostName}.bar -v ${BUILD_LOGS}/override-@{barName}.@{hostName}.log" />
+
+											</then>
+											<else>
+												<exec dir="./" executable="${IIT_BIN}/../mqsiapplybaroverride" output="${BUILD_LOGS}/IIBOverride.@{barName}.@{hostName}.log" failonerror="false" resultproperty="error.IIBOverride.@{barName}.@{hostName}">
+													<arg line="-b ${DEPLOYABLE_BARS}/@{barName}.bar -p ${BUILD_SOURCE}/${barProperties} -o ${DEPLOYABLE_BARS}/@{barName}.@{hostName}.bar -v ${BUILD_LOGS}/override-@{barName}.@{hostName}.log" />
+												</exec>
+											</else>
+
+										</if>
+
+									</else>
+								</if>
+
+								<if>
+									<not>
+										<equals arg1="${PREVIEW}" arg2="Y" />
+									</not>
+									<then>
+
+										<antcall target="-checkIIBErrors">
+											<param name="fileToCheck" value="${BUILD_LOGS}/override-@{barName}.log" />
+											<param name="fileToCheckLabel" value="Override @{barName} log file (with error description)." />
+										</antcall>
+
+										<logPublisher buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" verbose="true" filePath="${BUILD_LOGS}/override-@{barName}.@{hostName}.log" label="Override @{barName} log file" />
+
+										<artifactFilePublisher buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" verbose="true" filePath="${DEPLOYABLE_BARS}/@{barName}.@{hostName}.bar" label="@{barName} bar (with override applied for host @{hostName} - ${barProperties})" />
+
+									</then>
+								</if>
+							</then>
+						</if>
+					</sequential>
+				</for>
+
+			</sequential>
+		</for>
+
+	</target>
+
+	<target name="-deployAppProperties" depends="-initTarget">
+
+		<if>
+			<isset property="propertyFileProjects.list" />
+			<then>
+
+				<startBuildActivity label="Deploy application property files" activityIdProperty="deployPropertyFiles" autoComplete="true" buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" />
+
+				<for list="${IIB_HOSTS.list}" param="targetHost" delimiter=";">
+
+					<sequential>
+
+						<startBuildActivity label="Deploy property files to @{targetHost} host" parentActivityId="${deployPropertyFiles}" activityIdProperty="deployPropertyFilesForHost" autoComplete="true" buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" />
+
+						<for list="${propertyFileProjects.list}" param="propFileProject" delimiter=";">
+
+							<sequential>
+
+								<startBuildActivity label="Deploy property files in @{propFileProject} property file project" parentActivityId="${deployPropertyFilesForHost}" activityIdProperty="deployPropertyFilesProjectForHost" autoComplete="true" buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" />
+
+								<for param="fileInDirectory">
+									<path>
+										<fileset dir="${BUILD_SOURCE}/@{propFileProject}">
+											<include name="*" />
+											<exclude name=".project" />
+										</fileset>
+									</path>
+									<sequential>
+
+										<var name="fileInDirectoryName" unset="true" />
+										<basename property="fileInDirectoryName" file="@{fileInDirectory}" />
+
+										<echo message="Prepare to deploy ${fileInDirectoryName} to @{targetHost}" />
+
+										<startBuildActivity label="Deploying ${fileInDirectoryName} application properties file to @{targetHost}" parentActivityId="${deployPropertyFilesProjectForHost}" autoComplete="true" buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" />
+
+										<if>
+											<equals arg1="${PREVIEW}" arg2="Y" />
+											<then>
+												<echo message="NOTE: Running in preview mode - actions will be displayed only and not executed." />
+												<echo message="PREVIEW: ${BUILD_SUBSCRIPTS}/fileDeploy.sh ${TARGET_OS_USER_ID} ***** @{targetHost} @{fileInDirectory} ${propertyFileProject.@{propFileProject}.targetFolder}/${fileInDirectoryName}" />
+											</then>
+											<else>
+												<echo message="${BUILD_SUBSCRIPTS}/fileDeploy.sh ${TARGET_OS_USER_ID} ****** @{targetHost} @{fileInDirectory} ${propertyFileProject.@{propFileProject}.targetFolder}/${fileInDirectoryName}" />
+												<exec dir="${BUILD_SUBSCRIPTS}/" executable="/usr/bin/expect" output="${BUILD_LOGS}/DeployProps.@{propFileProject}.${fileInDirectoryName}.@{targetHost}.log" failonerror="false" resultProperty="result.DeployProps.@{propFileProject}.${fileInDirectoryName}.@{targetHost}">
+													<arg line="fileDeploy.sh" />
+													<arg value="${TARGET_OS_USER_ID}" />
+													<arg value="${targetOSPassword}" />
+													<arg value="@{targetHost}" />
+													<arg value="@{fileInDirectory}" />
+													<arg value="${propertyFileProject.@{propFileProject}.targetFolder}/${fileInDirectoryName}" />
+
+												</exec>
+
+												<antcall target="-checkFileDeployErrors">
+													<param name="fileToCheck" value="${BUILD_LOGS}/DeployProps.@{propFileProject}.${fileInDirectoryName}.@{targetHost}.log" />
+													<param name="fileToCheckLabel" value="Deploy log for ${fileInDirectoryName} application properties file deployment to @{targetHost} (with error description)." />
+												</antcall>
+
+												<logPublisher buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" verbose="true" filePath="${BUILD_LOGS}/DeployProps.@{propFileProject}.${fileInDirectoryName}.@{targetHost}.log" label="Deploy log for ${fileInDirectoryName} application properties file deployment to @{targetHost}." />
+
+												<var name="result" unset="true" />
+												<propertycopy property="result" from="result.DeployProps.@{propFileProject}.${fileInDirectoryName}.@{targetHost}" />
+
+												<fail message="Failed to deploy ${fileInDirectoryName} application properties file to @{targetHost} - see DeployProps.@{propFileProject}.${fileInDirectoryName}.@{targetHost}.log for further details.">
+													<condition>
+														<not>
+															<equals arg1="${result}" arg2="0" />
+														</not>
+													</condition>
+												</fail>
+											</else>
+										</if>
+									</sequential>
+								</for>
+
+							</sequential>
+
+						</for>
+
+					</sequential>
+
+				</for>
+
+			</then>
+		</if>
+
+	</target>
+
+	<target name="-deployApp" depends="">
+
+		<startBuildActivity label="Deploy the bars" activityIdProperty="deployBars" autoComplete="true" buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" />
+
+		<for list="${IIB_HOSTS.list}" param="iibRemoteBrokerHost" delimiter=";">
+			<sequential>
+
+				<var name="iib_clean_deploy_switch" unset="true" />
+				<var name="iib_clean_deploy_switch" value="" />
+
+				<if>
+					<equals arg1="${IIB_CLEAN_DEPLOY}" arg2="Y" />
+					<then>
+						<var name="iib_clean_deploy_switch" value="-m" />
+					</then>
+					<else>
+						<var name="iib_clean_deploy_switch" value="" />
+					</else>
+				</if>
+
+				<if>
+					<isset property="IIB_TIMEOUT" />
+					<then>
+						<var name="iib_timeout_switch" value="-w ${IIB_TIMEOUT}" />
+					</then>
+					<else>
+						<var name="iib_timeout_switch" value="" />
+					</else>
+				</if>
+
+				<for list="${bars.list}" param="barName" delimiter=";">
+					<sequential>
+						<var name="IIB_PORT" unset="true" />
+						<var name="IIB_QMGR" unset="true" />
+						<var name="execGroup" unset="true" />
+						<var name="barToDeploy" unset="true" />
+						<propertycopy property="IIB_PORT" from="IIB_PORT.@{iibRemoteBrokerHost}" />
+						<propertycopy property="IIB_QMGR" from="IIB_QMGR.@{iibRemoteBrokerHost}" />
+
+						<if>
+							<isset property="bar.@{barName}.execGroup" />
+							<then>
+								<propertycopy property="execGroup" from="bar.@{barName}.execGroup" />
+							</then>
+							<else>
+								<propertycopy property="execGroup" from="IIB_EXEC_GRP" />
+							</else>
+						</if>
+
+						<if>
+							<available file="${DEPLOYABLE_BARS}/@{barName}.@{iibRemoteBrokerHost}.bar" type="file" />
+							<then>
+								<var name="barToDeploy" value="${DEPLOYABLE_BARS}/@{barName}.@{iibRemoteBrokerHost}.bar" />
+								<startBuildActivity label="Deploying the @{barName} (@{iibRemoteBrokerHost}) bar to ${execGroup} execution group on @{iibRemoteBrokerHost}.${IIB_PORT}.${IIB_QMGR}" parentActivityId="${deployBars}" autoComplete="true" buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" />
+							</then>
+							<else>
+								<var name="barToDeploy" value="${DEPLOYABLE_BARS}/@{barName}.bar" />
+								<startBuildActivity label="Deploying the @{barName} bar to ${execGroup} execution group on @{iibRemoteBrokerHost}.${IIB_PORT}.${IIB_QMGR}" parentActivityId="${deployBars}" autoComplete="true" buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" />
+							</else>
+						</if>
+
+						<if>
+							<equals arg1="${PREVIEW}" arg2="Y" />
+							<then>
+
+								<echo message="NOTE: Running in preview mode - actions will be displayed only and not executed." />
+								<echo message="PREVIEW: ${BUILD_SUBSCRIPTS}/deployBar.sh ${barToDeploy} ${execGroup} ${IIT_BIN} ${MQSI_BIN} ${BUILD_HOME} @{iibRemoteBrokerHost} ${IIB_PORT} ${IIB_QMGR} ${iib_clean_deploy_switch} ${iib_timeout_switch} ${RTC_USER_ID} ${BUILD_LOGS}/deploy-@{barName}-@{iibRemoteBrokerHost}.log" />
+
+							</then>
+							<else>
+
+								<exec dir="${BUILD_SUBSCRIPTS}" executable="sh" output="${BUILD_LOGS}/IIBDeploy.@{barName}.@{iibRemoteBrokerHost}.${IIB_PORT}.${IIB_QMGR}.log" failonerror="false" resultproperty="error.IIBDeploy.@{barName}.@{iibRemoteBrokerHost}.${IIB_PORT}.${IIB_QMGR} ${IIB_QMGR} ${iib_clean_deploy_switch} ${iib_timeout_switch} ${RTC_USER_ID} ${BUILD_LOGS}/deploy-@{barName}-@{iibRemoteBrokerHost}.log">
+									<arg value="deployBar.sh" />
+									<arg value="${barToDeploy}" />
+									<arg value="" />
+									<arg value="${execGroup}" />
+									<arg value="${IIT_BIN}" />
+									<arg value="${MQSI_BIN}" />
+									<arg value="${BUILD_HOME}" />
+									<arg value="@{iibRemoteBrokerHost}" />
+									<arg value="${IIB_PORT}" />
+									<arg value="${IIB_QMGR}" />
+									<arg value="${iib_clean_deploy_switch}" />
+									<arg value="${iib_timeout_switch}" />
+									<arg value="${RTC_USER_ID}" />
+									<arg value="${BUILD_LOGS}/deploy-@{barName}-@{iibRemoteBrokerHost}.log" />
+								</exec>
+
+								<antcall target="-checkIIBErrors">
+									<param name="fileToCheck" value="${BUILD_LOGS}/deploy-@{barName}-@{iibRemoteBrokerHost}.log" />
+									<param name="fileToCheckLabel" value="Deploy @{barName} log file (with error description)." />
+								</antcall>
+
+								<logPublisher buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" verbose="true" filePath="${BUILD_LOGS}/deploy-@{barName}-@{iibRemoteBrokerHost}.log" label="Deploy @{barName} log file." />
+							</else>
+						</if>
+					</sequential>
+				</for>
+			</sequential>
+		</for>
+	</target>
+
+	<target name="-init">
+
+		<startBuildActivity label="Initialize build" autoComplete="true" buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" />
+
+		<echo message="Load properties" />
+		<property file="build.properties" />
+		<property file="${baseDir}/ant.properties" />
+
+		<echoproperties />
+		<property environment="env" />
+
+		<echo message="Load ant contrib from ${ANT_CONTRIB}" />
+
+		<taskdef resource="net/sf/antcontrib/antlib.xml">
+			<classpath>
+				<pathelement location="${ANT_CONTRIB}" />
+			</classpath>
+		</taskdef>
+
+		<echo message="Deleting and recreating automation directories" />
+
+		<delete dir="${BUILD_LOGS}" />
+		<delete dir="${BUILD_OUTPUT}" />
+
+		<mkdir dir="${BUILD_LOGS}" />
+		<mkdir dir="${BUILD_OUTPUT}" />
+		<mkdir dir="${BUILD_TMP}" />
+
+		<if>
+			<isset property="RTC_PASSWORD" />
+			<then>
+				<echo message="Using the RTC password set in the build definition" />
+				<var name="rtcPassword" value="${RTC_PASSWORD}" />
+			</then>
+			<elseif>
+
+				<isset property="RTC_ENCODED_PASSWORD" />
+				<then>
+					<echo message="Using the encoded RTC password - about to decode this" />
+
+					<exec dir="${BUILD_SUBSCRIPTS}/" executable="sh" output="${BUILD_TMP}/rtcDecoded" failonerror="true">
+						<arg line="decodePassword.sh" />
+						<arg value="${RTC_ENCODED_PASSWORD}" />
+					</exec>
+
+					<loadfile property="rtcPassword" srcFile="${BUILD_TMP}/rtcDecoded" />
+
+					<delete file="${BUILD_TMP}/rtcDecoded" />
+
+				</then>
+
+			</elseif>
+			<else>
+
+				<fail>Need to either have RTC_PASSWORD or RTC_ENCODED_PASSWORD property set.</fail>
+
+			</else>
+		</if>
+
+		<echo message="Completed initialization" />
+
+	</target>
+
+	<target name="-initAppDeploy" depends="">
+
+		<for list="${bars.list}" param="barName" delimiter=";">
+			<sequential>
+
+				<if>
+					<and>
+						<not>
+							<isset property="IIB_EXEC_GRP" />
+						</not>
+						<not>
+							<isset property="bar.@{barName}.execGroup" />
+						</not>
+					</and>
+					<then>
+						<fail>Need to either have IIB_EXEC_GRP property set as a default, or bar.&lt;barName&gt;.execGroup property set for each bar in bars.list.</fail>
+					</then>
+				</if>
+
+			</sequential>
+		</for>
+
+	</target>
+
+	<target name="-initTarget" depends="">
+
+		<if>
+			<isset property="propertyFileProjects.list" />
+
+			<then>
+				<if>
+					<isset property="TARGET_OS_PASSWORD" />
+					<then>
+						<echo message="Using the target OS password set in the build definition" />
+						<var name="targetOSPassword" value="${TARGET_OS_PASSWORD}" />
+					</then>
+					<elseif>
+
+						<isset property="TARGET_OS_ENCODED_PASSWORD" />
+						<then>
+							<echo message="Using the encoded target OS password - about to decode this" />
+
+							<exec dir="${BUILD_SUBSCRIPTS}/" executable="sh" output="${BUILD_TMP}/osDecoded" failonerror="true">
+								<arg line="decodePassword.sh" />
+								<arg value="${TARGET_OS_ENCODED_PASSWORD}" />
+							</exec>
+
+							<loadfile property="targetOSPassword" srcFile="${BUILD_TMP}/osDecoded" />
+
+							<delete file="${BUILD_TMP}/osDecoded" />
+
+						</then>
+
+					</elseif>
+					<else>
+
+						<fail>Need to either have TARGET_OS_PASSWORD or TARGET_OS_ENCODED_PASSWORD property set.</fail>
+
+					</else>
+				</if>
+			</then>
+		</if>
+
+	</target>
+
+	<target name="-deliverArtifacts" depends="">
+
+		<var name="SCM_LOGIN_LOG_FILE" value="${BUILD_LOGS}/scm-login.log" />
+
+		<echo message="About to run the login command" />
+
+		<echo message="Logging output to ${SCM_LOGIN_LOG_FILE}" />
+
+		<if>
+			<equals arg1="${PREVIEW}" arg2="Y" />
+			<then>
+				<echo message="NOTE: Running in preview mode - actions will be displayed only and not executed." />
+				<echo message="PREVIEW: scm.sh login -r ${repositoryAddress} -u ${RTC_USER_ID} -P ********" />
+			</then>
+			<else>
+
+				<exec dir="${BUILD_SOURCE}" executable="/bin/bash" output="${SCM_LOGIN_LOG_FILE}" failonerror="false" resultProperty="result.scm-login">
+					<arg line="${RTC_SCM_TOOLS}/scm.sh" />
+					<arg value="login" />
+					<arg value="-r" />
+					<arg value="${repositoryAddress}" />
+					<arg value="-u" />
+					<arg value="${RTC_USER_ID}" />
+					<arg value="-P" />
+					<arg value="${rtcPassword}" />
+				</exec>
+
+			</else>
+		</if>
+
+		<if>
+			<available file="scm-login.log" filepath="${BUILD_LOGS}" />
+			<then>
+				<antcall target="-checkSCMErrors">
+					<param name="fileToCheck" value="${SCM_LOGIN_LOG_FILE}" />
+					<param name="fileToCheckLabel" value="SCM login log file (with error description)." />
+				</antcall>
+			</then>
+		</if>
+
+		<if>
+			<available file="${deliverToProject}" type="dir" />
+			<then>
+
+				<echo message="Project ${deliverToProject} already exists." />
+				<var name="isUpdate" value="Y" />
+
+			</then>
+			<else>
+
+				<echo message="Project ${deliverToProject} does not exist, so create it and share it." />
+
+				<mkdir dir="${deliverToProject}" />
+
+				<var name="SCM_SHARE_LOG_FILE" value="${BUILD_LOGS}/scm-share.log" />
+
+				<echo message="About to run the share command" />
+
+				<echo message="Logging output to ${SCM_SHARE_LOG_FILE}" />
+
+				<if>
+					<equals arg1="${PREVIEW}" arg2="Y" />
+					<then>
+						<echo message="NOTE: Running in preview mode - actions will be displayed only and not executed." />
+						<echo message="PREVIEW: scm.sh share -r ${repositoryAddress} -u ${RTC_USER_ID} -P ******** '${team.scm.workspaceUUID}@${repositoryAddress}' '${ASSEMBLIES_COMPONENT}' '${deliverToProject}'" />
+					</then>
+					<else>
+
+						<exec dir="${BUILD_SOURCE}" executable="/bin/bash" output="${SCM_SHARE_LOG_FILE}" failonerror="false" resultProperty="result.scm-share">
+							<arg line="${RTC_SCM_TOOLS}/scm.sh" />
+							<arg value="share" />
+							<arg value="-r" />
+							<arg value="${repositoryAddress}" />
+							<arg value="-u" />
+							<arg value="${RTC_USER_ID}" />
+							<arg value="-P" />
+							<arg value="${rtcPassword}" />
+							<arg value="${team.scm.workspaceUUID}@${repositoryAddress}" />
+							<arg value="${ASSEMBLIES_COMPONENT}" />
+							<arg value="${deliverToProject}" />
+						</exec>
+
+					</else>
+				</if>
+
+				<if>
+					<available file="scm-share.log" filepath="${BUILD_LOGS}" />
+					<then>
+						<antcall target="-checkSCMErrors">
+							<param name="fileToCheck" value="${SCM_SHARE_LOG_FILE}" />
+							<param name="fileToCheckLabel" value="SCM share log file (with error description)." />
+						</antcall>
+					</then>
+				</if>
+			</else>
+		</if>
+
+		<echo message="Copy output files to project" />
+
+		<copy todir="${deliverToProject}">
+			<fileset dir="${BUILD_OUTPUT}">
+				<include name="*.bar" />
+			</fileset>
+		</copy>
+
+		<var name="SCM_STATUS_LOG_FILE" value="${BUILD_LOGS}/scm-status.log" />
+
+		<echo message="About to run the status command" />
+
+		<echo message="Logging output to ${SCM_STATUS_LOG_FILE}" />
+
+		<if>
+			<equals arg1="${PREVIEW}" arg2="Y" />
+			<then>
+
+				<echo message="NOTE: Running in preview mode - actions will be displayed only and not executed." />
+				<echo message="PREVIEW: scm.sh status -u ${RTC_USER_ID} -P ********" />
+
+			</then>
+			<else>
+
+				<exec dir="${BUILD_SOURCE}" executable="/bin/bash" output="${SCM_STATUS_LOG_FILE}" failonerror="false" resultProperty="result.scm-status">
+					<arg line="${RTC_SCM_TOOLS}/scm.sh" />
+					<arg value="status" />
+					<arg value="-u" />
+					<arg value="${RTC_USER_ID}" />
+					<arg value="-P" />
+					<arg value="${rtcPassword}" />
+				</exec>
+
+			</else>
+		</if>
+
+		<if>
+			<available file="scm-status.log" filepath="${BUILD_LOGS}" />
+			<then>
+				<antcall target="-checkSCMErrors">
+					<param name="fileToCheck" value="${SCM_STATUS_LOG_FILE}" />
+					<param name="fileToCheckLabel" value="SCM status log file (with error description)." />
+				</antcall>
+			</then>
+		</if>
+
+		<var name="SCM_CHECKIN_LOG_FILE" value="${BUILD_LOGS}/scm-checkin.log" />
+
+		<echo message="About to run the checkin command" />
+
+		<echo message="Logging output to ${SCM_CHECKIN_LOG_FILE}" />
+
+		<if>
+			<equals arg1="${PREVIEW}" arg2="Y" />
+			<then>
+
+				<echo message="NOTE: Running in preview mode - actions will be displayed only and not executed." />
+				<echo message="PREVIEW: scm.sh checkin -u ${RTC_USER_ID} -P ******** ." />
+
+			</then>
+			<else>
+
+				<exec dir="${BUILD_SOURCE}" executable="/bin/bash" output="${SCM_CHECKIN_LOG_FILE}" failonerror="false" resultProperty="result.scm-checkin">
+					<arg line="${RTC_SCM_TOOLS}/scm.sh" />
+					<arg value="checkin" />
+					<arg value="-u" />
+					<arg value="${RTC_USER_ID}" />
+					<arg value="-P" />
+					<arg value="${rtcPassword}" />
+					<arg value="." />
+				</exec>
+
+			</else>
+		</if>
+
+		<var name="checkinLogSize" unset="true" />
+
+		<if>
+			<available file="scm-checkin.log" filepath="${BUILD_LOGS}" />
+			<then>
+
+				<length file="${BUILD_LOGS}/scm-checkin.log" property="checkinLogSize" />
+
+				<antcall target="-checkSCMErrors">
+					<param name="fileToCheck" value="${SCM_CHECKIN_LOG_FILE}" />
+					<param name="fileToCheckLabel" value="SCM checkin log file (with error description)." />
+				</antcall>
+			</then>
+		</if>
+
+		<!-- If the checkin log is empty then skip the other commands -->
+		<if>
+			<not>
+				<equals arg1="${checkinLogSize}" arg2="0" />
+			</not>
+			<then>
+
+				<var name="SCM_CHANGESETCOMMENT_LOG_FILE" value="${BUILD_LOGS}/scm-changesetcomment.log" />
+
+				<echo message="About to run the changeset comment command" />
+
+				<echo message="Logging output to ${SCM_CHANGESETCOMMENT_LOG_FILE}" />
+
+				<if>
+					<equals arg1="${PREVIEW}" arg2="Y" />
+					<then>
+
+						<echo message="NOTE: Running in preview mode - actions will be displayed only and not executed." />
+						<echo message="PREVIEW: scm.sh changeset comment -u ${RTC_USER_ID} -P ******** '${deliverComment}'" />
+
+					</then>
+					<else>
+
+						<loadfile property="checkinFileText" srcFile="${SCM_CHECKIN_LOG_FILE}" />
+
+						<propertyregex property="changeSetId" override="true" input="${checkinFileText}" regexp="  \(([^)]+)\)" select="\1" />
+
+						<echo message="Change set ID = ${changeSetId}" />
+
+						<exec dir="${BUILD_SOURCE}" executable="/bin/bash" output="${SCM_CHANGESETCOMMENT_LOG_FILE}" failonerror="false" resultProperty="result.scm-changesetcomment">
+							<arg line="${RTC_SCM_TOOLS}/scm.sh" />
+							<arg value="changeset" />
+							<arg value="comment" />
+							<arg value="-u" />
+							<arg value="${RTC_USER_ID}" />
+							<arg value="-P" />
+							<arg value="${rtcPassword}" />
+							<arg value="${changeSetId}" />
+							<arg value="${deliverComment}" />
+						</exec>
+
+					</else>
+				</if>
+
+				<if>
+					<available file="scm-changesetcomment.log" filepath="${BUILD_LOGS}" />
+					<then>
+						<antcall target="-checkSCMErrors">
+							<param name="fileToCheck" value="${SCM_CHANGESETCOMMENT_LOG_FILE}" />
+							<param name="fileToCheckLabel" value="SCM changeset log file (with error description)." />
+						</antcall>
+					</then>
+				</if>
+
+				<var name="SCM_DELIVER_LOG_FILE" value="${BUILD_LOGS}/scm-deliver.log" />
+
+				<echo message="About to run the deliver command" />
+
+				<echo message="Logging output to ${SCM_DELIVER_LOG_FILE}" />
+
+				<if>
+					<equals arg1="${PREVIEW}" arg2="Y" />
+					<then>
+
+						<echo message="NOTE: Running in preview mode - actions will be displayed only and not executed." />
+						<echo message="PREVIEW: scm.sh deliver -r ${repositoryAddress} -u ${RTC_USER_ID} -P ******** -C '${ASSEMBLIES_COMPONENT}' -s '${team.scm.workspaceUUID}'" />
+
+					</then>
+					<else>
+
+						<exec dir="${BUILD_SOURCE}" executable="/bin/bash" output="${SCM_DELIVER_LOG_FILE}" failonerror="false" resultProperty="result.scm-deliver">
+							<arg line="${RTC_SCM_TOOLS}/scm.sh" />
+							<arg value="deliver" />
+							<arg value="-r" />
+							<arg value="${repositoryAddress}" />
+							<arg value="-u" />
+							<arg value="${RTC_USER_ID}" />
+							<arg value="-P" />
+							<arg value="${rtcPassword}" />
+							<arg value="-C" />
+							<arg value="${ASSEMBLIES_COMPONENT}" />
+							<arg value="-s" />
+							<arg value="${team.scm.workspaceUUID}" />
+						</exec>
+
+					</else>
+				</if>
+
+				<if>
+					<available file="scm-deliver.log" filepath="${BUILD_LOGS}" />
+					<then>
+						<antcall target="-checkSCMErrors">
+							<param name="fileToCheck" value="${SCM_DELIVER_LOG_FILE}" />
+							<param name="fileToCheckLabel" value="SCM deliver log file (with error description)." />
+						</antcall>
+					</then>
+				</if>
+			</then>
+			<else>
+				<echo message="NOTE: Skip other SCM commands as there was nothing to checkin" />
+			</else>
+		</if>
+
+	</target>
+
+	<target name="-checkIIBErrors">
+
+		<loadfile property="failResponse" srcfile="${fileToCheck}">
+			<filterchain>
+				<linecontainsregexp>
+					<regexp pattern="does not exist" />
+				</linecontainsregexp>
+			</filterchain>
+		</loadfile>
+
+		<loadfile property="failResponse" srcfile="${fileToCheck}">
+			<filterchain>
+				<linecontainsregexp>
+					<regexp pattern="The file was not deployed" />
+				</linecontainsregexp>
+			</filterchain>
+		</loadfile>
+
+		<loadfile property="failResponse" srcfile="${fileToCheck}">
+			<filterchain>
+				<linecontainsregexp>
+					<regexp pattern="threw and exception" />
+				</linecontainsregexp>
+			</filterchain>
+		</loadfile>
+
+		<loadfile property="failResponse" srcfile="${fileToCheck}">
+			<filterchain>
+				<linecontainsregexp>
+					<regexp pattern="MQ reason code" />
+				</linecontainsregexp>
+			</filterchain>
+		</loadfile>
+
+		<loadfile property="failResponse" srcfile="${fileToCheck}">
+			<filterchain>
+				<linecontainsregexp>
+					<regexp pattern="has the status of 'FAILED'" />
+				</linecontainsregexp>
+			</filterchain>
+		</loadfile>
+
+		<loadfile property="failResponse" srcfile="${fileToCheck}">
+			<filterchain>
+				<linecontainsregexp>
+					<regexp pattern="Workspace has errors on it after the build" />
+				</linecontainsregexp>
+			</filterchain>
+		</loadfile>
+
+		<loadfile property="failResponse" srcfile="${fileToCheck}">
+			<filterchain>
+				<linecontainsregexp>
+					<regexp pattern="The broker rejected the deployment request" />
+				</linecontainsregexp>
+			</filterchain>
+		</loadfile>
+
+		<loadfile property="failResponse" srcfile="${fileToCheck}">
+			<filterchain>
+				<linecontainsregexp>
+					<regexp pattern="did not contain a top-level deployment descriptor" />
+				</linecontainsregexp>
+			</filterchain>
+		</loadfile>
+
+		<if>
+			<isset property="failResponse" />
+			<then>
+				<echo message="Response is not OK" />
+
+				<logPublisher buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" verbose="true" filePath="${fileToCheck}" label="${fileToCheckLabel}" />
+
+				<if>
+					<equals arg1="${IGNORE_ERROR}" arg2="Y" />
+					<then>
+						<echo message="Ignoring error in ${fileToCheck}" />
+					</then>
+					<else>
+						<fail message="Error message returned in ${fileToCheck}. Review contents of file in logs." />
+					</else>
+				</if>
+			</then>
+			<else>
+				<echo message="Response is OK" />
+			</else>
+		</if>
+
+	</target>
+
+	<target name="-checkFileDeployErrors">
+
+		<loadfile property="failResponse" srcfile="${fileToCheck}">
+			<filterchain>
+				<linecontainsregexp>
+					<regexp pattern="Permission denied" />
+				</linecontainsregexp>
+			</filterchain>
+		</loadfile>
+
+		<if>
+			<isset property="failResponse" />
+			<then>
+				<echo message="Response is not OK" />
+
+				<logPublisher buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" verbose="true" filePath="${fileToCheck}" label="${fileToCheckLabel}" />
+
+				<if>
+					<equals arg1="${IGNORE_ERROR}" arg2="Y" />
+					<then>
+						<echo message="Ignoring error in ${fileToCheck}" />
+					</then>
+					<else>
+						<fail message="Error message returned in ${fileToCheck}. Review contents of file in logs." />
+					</else>
+				</if>
+			</then>
+			<else>
+				<echo message="Response is OK" />
+			</else>
+		</if>
+
+	</target>
+
+	<target name="-checkSCMErrors" depends="">
+
+		<loadfile property="failResponse" srcfile="${fileToCheck}">
+			<filterchain>
+				<linecontainsregexp>
+					<regexp pattern="CRJAZ" />
+				</linecontainsregexp>
+			</filterchain>
+		</loadfile>
+
+		<loadfile property="failResponse" srcfile="${fileToCheck}">
+			<filterchain>
+				<linecontainsregexp>
+					<regexp pattern="Could not login" />
+				</linecontainsregexp>
+			</filterchain>
+		</loadfile>
+
+		<loadfile property="failResponse" srcfile="${fileToCheck}">
+			<filterchain>
+				<linecontainsregexp>
+					<regexp pattern="You don't have permission to perform the following actions:" />
+				</linecontainsregexp>
+			</filterchain>
+		</loadfile>
+
+		<loadfile property="failResponse" srcfile="${fileToCheck}">
+			<filterchain>
+				<linecontainsregexp>
+					<regexp pattern="Problem running" />
+				</linecontainsregexp>
+			</filterchain>
+		</loadfile>
+
+		<loadfile property="failResponse" srcfile="${fileToCheck}">
+			<filterchain>
+				<linecontainsregexp>
+					<regexp pattern="Unable to find component" />
+				</linecontainsregexp>
+			</filterchain>
+		</loadfile>
+
+		<if>
+			<isset property="failResponse" />
+			<then>
+				<echo message="Response is not OK" />
+
+				<logPublisher buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" verbose="true" filePath="${fileToCheck}" label="${fileToCheckLabel}" />
+
+				<if>
+					<equals arg1="${IGNORE_ERROR}" arg2="Y" />
+					<then>
+						<echo message="Ignoring error in ${fileToCheck}" />
+					</then>
+					<else>
+						<fail message="Error message returned in ${fileToCheck}. Review contents of file in logs." />
+					</else>
+				</if>
+			</then>
+			<else>
+				<echo message="Response is OK" />
+			</else>
+		</if>
+	</target>
+
+</project>
