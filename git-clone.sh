@@ -1,1 +1,2 @@
-git clone ssh://SureshPasula@github.com/PBC.git
+git clone ssh://git@github.com:SureshPasula/PBC.git
+
