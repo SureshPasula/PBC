@@ -27,7 +27,6 @@
    <exec executable="/bin/bash">
      <arg value="./git-commit-push.sh"/>
    </exec>
-   <git command = "log"/> 
  </sequential>   
  </target>
  
