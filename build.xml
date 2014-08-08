@@ -601,10 +601,10 @@ See the readme.txt file for further terms and conditions.
 		<echoproperties />
 		<property environment="env" />
 		
-        <echo>Load ant contrib from ${ANT_CONTRIB}</echo>   
+        <echo>Load ant contrib</echo>   
 		<taskdef resource="net/sf/antcontrib/antlib.xml">
 			<classpath>
-				<pathelement location="/home/spasula/ant/apache-ant-1.9.3/lib" />
+				<pathelement location="${ANT_CONTRIB}" />
 			</classpath>
 		</taskdef>
         
