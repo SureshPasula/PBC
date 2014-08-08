@@ -10,19 +10,19 @@ See the readme.txt file for further terms and conditions.
 		<fail message="No target specified. You need to specify either assembleAndDeployApp or overrideAndDeployApp as the target to run." />
 	</target>
 
-	<target name="assembleApp" depends="run, -assembleApp, -storeApp" />
+	<target name="assembleApp" depends="-init, -assembleApp, -storeApp" />
 
-	<target name="deployApp" depends="run, -initAppDeploy, -deployApp, -deployAppProperties" />
+	<target name="deployApp" depends="-init, -initAppDeploy, -deployApp, -deployAppProperties" />
 
-	<target name="deployAppOnlybars" depends="run, -initAppDeploy, -deployApp" />
+	<target name="deployAppOnlybars" depends="-init, -initAppDeploy, -deployApp" />
 
-	<target name="deployAppOnlyProperties" depends="run, -deployAppProperties" />
+	<target name="deployAppOnlyProperties" depends="-init, -deployAppProperties" />
 
-	<target name="assembleAndDeployApp" depends="run, -initAppDeploy, -assembleApp, -storeApp, -deployApp, -deployAppProperties" />
+	<target name="assembleAndDeployApp" depends="-init, -initAppDeploy, -assembleApp, -storeApp, -deployApp, -deployAppProperties" />
 
-	<target name="overrideAndDeployApp" depends="run, -initAppDeploy, -overrideApp, -deployApp, -deployAppProperties" />
+	<target name="overrideAndDeployApp" depends="-init, -initAppDeploy, -overrideApp, -deployApp, -deployAppProperties" />
 
-	<target name="assembleOverrideAndDeployApp" depends="run, -initAppDeploy, -assembleApp, -storeApp, -overrideApp, -deployApp, -deployAppProperties" />
+	<target name="assembleOverrideAndDeployApp" depends="-init, -initAppDeploy, -assembleApp, -storeApp, -overrideApp, -deployApp, -deployAppProperties" />
 
 	<target name="-assembleApp" depends="">
 
@@ -400,7 +400,7 @@ See the readme.txt file for further terms and conditions.
 
 	</target>
 
-	<target name="-deployAppProperties" depends="-initTarget">
+	<target name="-deployAppProperties" depends="run">
 
 		<if>
 			<isset property="propertyFileProjects.list" />
@@ -591,7 +591,7 @@ See the readme.txt file for further terms and conditions.
 		</for>
 	</target>
 
-	<target name="run">
+	<target name="-init">
 	
 	    <echo>This target intialization process</echo>
 		<echo>Load properties</echo>
@@ -644,7 +644,7 @@ See the readme.txt file for further terms and conditions.
 
 	</target>
 
-	<target name="-initTarget" depends="">
+	<target name="run" depends="">
 
 		<if>
 			<isset property="propertyFileProjects.list" />
