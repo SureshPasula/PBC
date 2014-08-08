@@ -400,7 +400,7 @@ See the readme.txt file for further terms and conditions.
 
 	</target>
 
-	<target name="-deployAppProperties" depends="run">
+	<target name="-deployAppProperties" depends="-initTarget">
 
 		<if>
 			<isset property="propertyFileProjects.list" />
@@ -644,7 +644,7 @@ See the readme.txt file for further terms and conditions.
 
 	</target>
 
-	<target name="run" depends="">
+	<target name="-initTarget" depends="">
 	
         <echo>Load ant contrib</echo>  
 		<taskdef resource="net/sf/antcontrib/antlib.xml">
