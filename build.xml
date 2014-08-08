@@ -604,7 +604,7 @@ See the readme.txt file for further terms and conditions.
         <echo>Load ant contrib from ${ANT_CONTRIB}</echo>   
 		<taskdef resource="net/sf/antcontrib/antlib.xml">
 			<classpath>
-				<pathelement location="${ANT_CONTRIB}" />
+				<pathelement location="/home/spasula/ant/apache-ant-1.9.3/lib" />
 			</classpath>
 		</taskdef>
         
