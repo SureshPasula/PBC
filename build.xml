@@ -645,7 +645,14 @@ See the readme.txt file for further terms and conditions.
 	</target>
 
 	<target name="run" depends="">
-        <taskdef resource="net/sf/antcontrib/antlib.xml" />
+        
+		<echo>Load ant contrib from ${ANT_CONTRIB}</echo>   
+		<taskdef resource="net/sf/antcontrib/antlib.xml">
+			<classpath>
+				<pathelement location="${ANT_CONTRIB}" />
+			</classpath>
+		</taskdef>
+		
 		<if>
 			<isset property="propertyFileProjects.list" />
 
