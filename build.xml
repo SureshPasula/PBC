@@ -6,9 +6,6 @@ See the readme.txt file for further terms and conditions.
 
 <project name="build" default="specifyTarget">
 
-	<echo message="Import RTC tasks from ${RTC_BUILD_TOOLKIT}/BuildToolkitTaskDefs.xml" />
-	<import file="${RTC_BUILD_TOOLKIT}/BuildToolkitTaskDefs.xml" />
-
 	<target name="specifyTarget" depends="">
 		<fail message="No target specified. You need to specify either assembleAndDeployApp or overrideAndDeployApp as the target to run." />
 	</target>
