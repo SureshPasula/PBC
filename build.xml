@@ -645,7 +645,7 @@ See the readme.txt file for further terms and conditions.
 	</target>
 
 	<target name="run" depends="">
-
+        <taskdef resource="net/sf/antcontrib/antlib.xml" />
 		<if>
 			<isset property="propertyFileProjects.list" />
 
