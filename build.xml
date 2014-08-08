@@ -595,9 +595,7 @@ See the readme.txt file for further terms and conditions.
 	</target>
 
 	<target name="-init">
-
-		<startBuildActivity label="Initialize build" autoComplete="true" buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" />
-
+	    <echo messge="This target intialization process"/>
 		<echo message="Load properties" />
 		<property file="build.properties" />
 		<property file="${baseDir}/ant.properties" />
