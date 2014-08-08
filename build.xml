@@ -592,64 +592,32 @@ See the readme.txt file for further terms and conditions.
 	</target>
 
 	<target name="run">
-	    <echo messge="This target intialization process"/>
-		<echo message="Load properties" />
+	
+	    <echo>This target intialization process</echo>
+		<echo>Load properties</echo>
 		<property file="build.properties" />
 		<property file="${baseDir}/ant.properties" />
 
 		<echoproperties />
 		<property environment="env" />
-
-		<echo message="Load ant contrib from ${ANT_CONTRIB}" />
-
+		
+        <echo>Load ant contrib from ${ANT_CONTRIB}</echo>   
 		<taskdef resource="net/sf/antcontrib/antlib.xml">
 			<classpath>
 				<pathelement location="${ANT_CONTRIB}" />
 			</classpath>
 		</taskdef>
-
-		<echo message="Deleting and recreating automation directories" />
-
+        
+	    <echo>Deleting and recreating automation directories</echo>
 		<delete dir="${BUILD_LOGS}" />
 		<delete dir="${BUILD_OUTPUT}" />
 
 		<mkdir dir="${BUILD_LOGS}" />
 		<mkdir dir="${BUILD_OUTPUT}" />
 		<mkdir dir="${BUILD_TMP}" />
-
-		<if>
-			<isset property="RTC_PASSWORD" />
-			<then>
-				<echo message="Using the RTC password set in the build definition" />
-				<var name="rtcPassword" value="${RTC_PASSWORD}" />
-			</then>
-			<elseif>
-
-				<isset property="RTC_ENCODED_PASSWORD" />
-				<then>
-					<echo message="Using the encoded RTC password - about to decode this" />
-
-					<exec dir="${BUILD_SUBSCRIPTS}/" executable="sh" output="${BUILD_TMP}/rtcDecoded" failonerror="true">
-						<arg line="decodePassword.sh" />
-						<arg value="${RTC_ENCODED_PASSWORD}" />
-					</exec>
-
-					<loadfile property="rtcPassword" srcFile="${BUILD_TMP}/rtcDecoded" />
-
-					<delete file="${BUILD_TMP}/rtcDecoded" />
-
-				</then>
-
-			</elseif>
-			<else>
-
-				<fail>Need to either have RTC_PASSWORD or RTC_ENCODED_PASSWORD property set.</fail>
-
-			</else>
-		</if>
-
-		<echo message="Completed initialization" />
-
+		
+		<echo>Completed initialization</echo>
+		
 	</target>
 
 	<target name="-initAppDeploy" depends="">
