@@ -594,7 +594,7 @@ See the readme.txt file for further terms and conditions.
 		</for>
 	</target>
 
-	<target name="-init">
+	<target name="run">
 	    <echo messge="This target intialization process"/>
 		<echo message="Load properties" />
 		<property file="build.properties" />
