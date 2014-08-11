@@ -17,7 +17,7 @@
    <exec executable="/bin/bash">
      <arg line="./git-clone.sh"/>
    </exec>
-   <copy file="/home/spasula/artifact/*.bar" todir="./PBC"/>
+   <copy file="/home/spasula/artifact/scribblesecond.bar" todir="./PBC"/>
    <git command = "add">
      <args>
 	    <arg value = "-A"/>
