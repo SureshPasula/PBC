@@ -2,8 +2,8 @@
 
   <target name="run">
    
-   <echo>This is for bar file sending to the git repository</echo>
-   
+  <echo>This is for bar file sending to the git repository</echo>
+  <sequential>
    <exec executable="/bin/bash">
      <arg line="./git-clone.sh"/>
    </exec>
@@ -13,7 +13,6 @@
    <exec executable="/bin/bash">
      <arg line="./git-commit-push.sh"/>
    </exec>
-   
  </sequential>  
  
  </target>
