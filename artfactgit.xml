@@ -15,17 +15,17 @@
    <sequential>
    <echo>This is for bar file sending to the git repository</echo>
    <exec executable="/bin/bash">
-     <arg line="./git-clone.sh"/>
+     <arg value="./git-clone.sh"/>
    </exec>
    <copy file="/home/spasula/artifact/scribblesecond.bar" todir="./PBC"/>
    <git command = "add">
      <args>
 	    <arg value = "-A"/>
-        <arg value = "./PBC/*.bar"/>
+        <arg value = "./PBC/scribblesecond.bar"/>
 	 </args>	
    </git> 
    <exec executable="/bin/bash">
-     <arg line="./git-commit-push.sh"/>
+     <arg value="./git-commit-push.sh"/>
    </exec>
  </sequential>   
  </target>
