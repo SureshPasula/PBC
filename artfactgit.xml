@@ -15,7 +15,7 @@
    <sequential>
    <echo>This is for bar file sending to the git repository</echo>
    <exec executable="/bin/bash">
-     <arg value="./git-clone.sh"/>
+     <arg line="./git-clone.sh"/>
    </exec>
    <copy file="/home/spasula/artifact/*.bar" todir="./PBC"/>
    <git command = "add">
