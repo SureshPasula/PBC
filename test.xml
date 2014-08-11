@@ -1,0 +1,11 @@
+<project name="shellTest">
+
+ <target name="run">
+    <exec executable="/bin/bash">
+     <arg value="./test.sh"/>
+   </exec>
+ </target>
+
+</project>
+
+
