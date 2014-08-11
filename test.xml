@@ -2,7 +2,7 @@
 
  <target name="run">
     <exec executable="/bin/bash">
-     <arg value="./test.sh"/>
+     <arg line="./test.sh"/>
    </exec>
  </target>
 
