@@ -17,15 +17,15 @@
    <exec executable="/bin/bash">
      <arg value="./git-clone.sh"/>
    </exec>
-   <copy file="/home/spasula/artifact/scribble.bar" todir="./PBC"/>
+   <copy file="/home/spasula/artifact/*.bar" todir="./PBC"/>
    <git command = "add">
      <args>
 	    <arg value = "-A"/>
-        <arg value = "./PBC/scribble.bar"/>
+        <arg value = "./PBC/*.bar"/>
 	 </args>	
    </git> 
    <exec executable="/bin/bash">
-     <arg value="./git-commit-push.sh"/>
+     <arg line="./git-commit-push.sh"/>
    </exec>
  </sequential>   
  </target>
