@@ -1,1 +1,1 @@
-git clone https://SureshPasula:prolifics1@github.com/SureshPasula/PBC.git 
+git clone git@github.com:SureshPasula/PBC.git 
