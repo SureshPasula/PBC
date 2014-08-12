@@ -3,4 +3,5 @@ git config --global user.name spasula
 git add -A ./PBC/scribblesecond.bar 
 git commit -m "BAR Artifact is deployed in to git repository"
 git pull https://SureshPasula@github.com/SureshPasula/PBC.git master
-git push ssh://spasula:prolifics1@github.com/SureshPasula/PBC.git 
+git push ssh://git@github.com:SureshPasula:prolifics1/PBC.git 
+
