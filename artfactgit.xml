@@ -5,7 +5,7 @@
   <echo>This is for bar file sending to the git repository</echo>
   <sequential>
    <echo>Loading the properties file</echo>
-   <echoproperties destfile="build.properties
+   <echoproperties/>
    <property file="build.properties" />
    <echo>Property file value is ${REPOSITORY_URL}</echo>
    <exec executable="/bin/bash">
