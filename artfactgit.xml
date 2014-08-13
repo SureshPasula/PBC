@@ -9,7 +9,7 @@
 	 <arg value="${REPOSITORY_URL}" />
    </exec>
    
-   <copy file="/home/spasula/artifact/*.bar" todir="./"/>
+   <copy file="/home/spasula/artifact/scribblethree.bar" todir="./"/>
    
    <exec executable="/bin/bash">
      <arg line="./git-commit-push.sh"/>
