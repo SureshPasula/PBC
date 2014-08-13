@@ -6,12 +6,14 @@
   <sequential>
    <exec executable="/bin/bash">
      <arg line="./git-clone.sh"/>
+	 <arg value="${REPOSITORY_URL}" />
    </exec>
    
-   <copy file="/home/spasula/artifact/scribblesecond.bar" todir="./PBC"/>
+   <copy file="/home/spasula/artifact/scribblesecond.bar" todir="./"/>
    
    <exec executable="/bin/bash">
      <arg line="./git-commit-push.sh"/>
+	 <arg value="${REPOSITORY_URL}" />
    </exec>
  </sequential>  
  
