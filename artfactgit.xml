@@ -13,7 +13,7 @@
    
    <exec executable="/bin/bash">
      <arg line="./git-commit-push.sh"/>
-	 <arg value="${REPOSITORY_URL}" />
+	 <arg value="${REPOSITORY_URL}"/>
    </exec>
  </sequential>  
  
