@@ -5,13 +5,14 @@
   <echo>This is for bar file sending to the git repository</echo>
   <sequential>
    <echo>Loading the properties file</echo>
+   <echoproperties destfile="build.properties
    <property file="build.properties" />
    <echo>Property file value is ${REPOSITORY_URL}</echo>
    <exec executable="/bin/bash">
      <arg line="./git-clone.sh"/>
 	 <arg value="${REPOSITORY_URL}"/>
    </exec>
-   <copy file="/home/spasula/artifact/scribblethree.bar" todir="./"/>
+   <copy file="/home/spasula/artifact/{*}.bar" todir="./"/>
    <exec executable="/bin/bash">
      <arg line="./git-commit-push.sh"/>
 	 <arg value="${URL}" />
