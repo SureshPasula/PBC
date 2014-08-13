@@ -9,11 +9,13 @@
 	 <arg value="${REPOSITORY_URL}" />
    </exec>
    
-   <copy file="/home/spasula/artifact/scribblesecond.bar" todir="./"/>
+   <copy file="/home/spasula/artifact/*.bar" todir="./"/>
    
    <exec executable="/bin/bash">
      <arg line="./git-commit-push.sh"/>
-	 <arg value="${REPOSITORY_URL}"/>
+	 <arg value="${REPOSITORY_URL}" />
+	 <arg value="${REPOSITORY_USERNAME}"/>
+	 <arg value="${REPOSITORY_PASSWORD}"/>
    </exec>
  </sequential>  
  
