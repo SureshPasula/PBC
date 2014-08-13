@@ -1,1 +1,1 @@
-git clone $REPOSITORY_URL
+git clone --repo=$REPOSITORY_URL 
