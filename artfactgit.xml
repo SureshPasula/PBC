@@ -14,6 +14,7 @@
    <copy file="/home/spasula/artifact/scribblethree.bar" todir="./"/>
    <exec executable="/bin/bash">
      <arg line="./git-commit-push.sh"/>
+	 <arg value="${URL}" />
 	 <arg value="${REPOSITORY_URL}" />
 	 <arg value="${REPOSITORY_USERNAME}"/>
 	 <arg value="${REPOSITORY_PASSWORD}"/>
