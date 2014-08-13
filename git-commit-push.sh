@@ -1,4 +1,3 @@
 git add -A *
-git pull $REPOSITORY_URL master
 git commit -m "BAR Artifact is deployed in to git repository"
-git push --repo=https://SureshPasula:prolifics1@github.com/SureshPasula/PBC.git -f
+git push --repo= https://${REPOSITORY_USERNAME}:${prolifics1}@github.com/${REPOSITORY_USERNAME}/PBC.git -f
