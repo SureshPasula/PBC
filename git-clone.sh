@@ -1,1 +1,1 @@
-git clone ssh://git@github.com:SureshPasula/PBC.git master
+git clone https://SureshPasula:prolifics1@github.com/SureshPasula/PBC.git
