@@ -624,27 +624,27 @@ See the readme.txt file for further terms and conditions.
     
 	<echo>Need to either have IIB_EXEC_GRP property set as a default, or bar.&lt;barName&gt;.execGroup property set for each bar in bars.list.</echo>
 	
-	/*
-	<for list="${bars.list}" param="barName" delimiter=";">
-			<sequential>
+	
+	#<for list="${bars.list}" param="barName" delimiter=";">
+	#		<sequential>
 
-				<if>
-					<and>
-						<not>
-							<isset property="IIB_EXEC_GRP" />
-						</not>
-						<not>
-							<isset property="bar.@{barName}.execGroup" />
-						</not>
-					</and>
-					<then>
-						<fail>Need to either have IIB_EXEC_GRP property set as a default, or bar.&lt;barName&gt;.execGroup property set for each bar in bars.list.</fail>
-					</then>
-				</if>
-
-			</sequential>
-	</for>
-    */   
+	#			<if>
+	#				<and>
+	#					<not>
+	#						<isset property="IIB_EXEC_GRP" />
+	#					</not>
+	#					<not>
+	#						<isset property="bar.@{barName}.execGroup" />
+	#					</not>
+	#				</and>
+	#				<then>
+	#					<fail>Need to either have IIB_EXEC_GRP property set as a default, or bar.&lt;barName&gt;.execGroup property set for each bar in bars.list.</fail>
+	#				</then>
+	#			</if>
+    
+	#		</sequential>
+	#</for>
+       
 	</target>
 
 	<target name="-initTarget" depends="">
