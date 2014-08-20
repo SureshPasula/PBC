@@ -622,9 +622,9 @@ See the readme.txt file for further terms and conditions.
 
 	<target name="-initAppDeploy" depends="">
     
-	<!-- <echo>Need to either have IIB_EXEC_GRP property set as a default, or bar.&lt;barName&gt;.execGroup property set for each bar in bars.list.</echo>
-	--> 
+	 <echo>Need to either have IIB_EXEC_GRP property set as a default, or bar.&lt;barName&gt;.execGroup property set for each bar in bars.list.</echo>
 	
+	<!--
 	<for list="${bars.list}" param="barName" delimiter=";">
 			<sequential>
 
@@ -644,7 +644,7 @@ See the readme.txt file for further terms and conditions.
     
 			</sequential>
 	</for>
-	 
+	 --> 
        
 	</target>
 
