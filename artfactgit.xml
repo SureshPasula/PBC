@@ -1,11 +1,16 @@
 <project name="BarPush">
 
   <target name="run">
-   
-  <echo>This is for bar file sending to the git repository</echo>
+  
+  <macrodef name="startBuildActivity">
+    <sequential>
+        <echo message="This is for checking the macrodef for labeling"/>
+     </sequential>
+   </macrodef>  
+  <startBuildActivity/>  
+  <!--<echo>This is for bar file sending to the git repository</echo>
   <sequential>
    <echo>Loading the properties file</echo>
-   <echoproperties/>
    <property file="build.properties" />
    <echo>Property file value is ${REPOSITORY_URL}</echo>
    <exec executable="/bin/bash">
@@ -21,7 +26,7 @@
 	 <arg value="${REPOSITORY_PASSWORD}"/>
    </exec>
  </sequential>  
- 
+ -->
  </target>
  
 </project>
