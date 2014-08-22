@@ -25,8 +25,23 @@ See the readme.txt file for further terms and conditions.
 	<target name="assembleOverrideAndDeployApp" depends="-init, -initAppDeploy, -assembleApp, -storeApp, -overrideApp, -deployApp, -deployAppProperties" />
 
 	<target name="-assembleApp" depends="">
-
-		<startBuildActivity label="Assemble the bars" activityIdProperty="creatingBars" autoComplete="true" buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" />
+	
+	   <macrodef name="startBuildActivity">
+		    <attribute name="label"/> 	
+            <sequential>
+               <echo message="Starting of the build acitivity of :@{label}"/>
+            </sequential>
+       </macrodef>
+   
+	   <macrodef name="endBuildActivity">
+		<attribute name="label"/> 	
+		<sequential>
+			<echo message="End of the build Actvity of :@{label}"/>
+		</sequential>
+	   </macrodef> 
+	
+       
+		<startBuildActivity label="Assemble the bars"/> 
 
 		<for list="${bars.list}" param="barName" delimiter=";">
 
@@ -38,6 +53,7 @@ See the readme.txt file for further terms and conditions.
 				<var name="useExistingBar" value="FALSE" />
 
 				<for list="${useExistingBars.list}" param="useExistingBarName" delimiter=";">
+				
 					<sequential>
 
 						<if>
@@ -46,8 +62,8 @@ See the readme.txt file for further terms and conditions.
 								<var name="useExistingBar" value="TRUE" />
 							</then>
 						</if>
-
-					</sequential>
+						
+     				</sequential>
 				</for>
 
 				<!-- Either assemble a new bar use the existing bar -->
@@ -55,7 +71,6 @@ See the readme.txt file for further terms and conditions.
 				<if>
 					<equals arg1="${useExistingBar}" arg2="FALSE" />
 					<then>
-
 						<var name="barDeployableFiles" unset="true" />
 						<var name="barTempDeployableFiles" unset="true" />
 						<var name="barProjects" unset="true" />
@@ -67,14 +82,13 @@ See the readme.txt file for further terms and conditions.
 
 						<if>
 							<isset property="bar.@{barName}.applications.list" />
+							
 							<then>
-
 								<propertycopy property="barTempApplications" from="bar.@{barName}.applications.list" />
 								<propertyregex property="barApplications" override="true" input="${barTempApplications}" regexp=";" replace=" " defaultValue="${barTempApplications}" />
-
 							</then>
+							
 							<else>
-
 								<propertycopy property="barTempProjects" from="bar.@{barName}.projects.list" />
 								<propertyregex property="barProjects" override="true" input="${barTempProjects}" regexp=";" replace=" " defaultValue="${barTempProjects}" />
 							</else>
@@ -82,11 +96,12 @@ See the readme.txt file for further terms and conditions.
 
 						<if>
 							<isset property="libraries.list" />
+							
 							<then>
+							
 								<if>
 									<equals arg1="${libraries.list}" arg2="" />
 									<then>
-
 										<fail message="Do not set libraries.list to an empty string. It must either have a value, or not be set at all." />
 									</then>
 								</if>
@@ -96,7 +111,6 @@ See the readme.txt file for further terms and conditions.
 
 							</then>
 							<else>
-
 								<var name="barLibrariesSwitch" value="" />
 							</else>
 						</if>
@@ -108,19 +122,16 @@ See the readme.txt file for further terms and conditions.
 								<propertyregex property="barDeployableFiles" override="true" input="${barTempDeployableFiles}" regexp=";" replace=" " defaultValue="${barTempDeployableFiles}" />
 							</then>
 						</if>
-
-						<startBuildActivity label="Assemble the @{barName} bar" parentActivityId="${creatingBars}" autoComplete="true" buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" />
+						
+						<startBuildActivity label="Assemble the @{barName} bar"/>
 
 						<if>
 							<equals arg1="${PREVIEW}" arg2="Y" />
 							<then>
-
 								<echo message="NOTE: Running in preview mode - actions will be displayed only and not executed." />
-
 								<if>
 									<isset property="bar.@{barName}.applications.list" />
 									<then>
-
 										<echo message="PREVIEW: ./mqsicreatebar -data ${BUILD_SOURCE} -b ${BUILD_OUTPUT}/@{barName}.bar -a ${barApplications} -deployAsSource ${barLibrariesSwitch} -trace -v ${BUILD_LOGS}/assemble-@{barName}.log" />
 									</then>
 									<else>
@@ -128,6 +139,7 @@ See the readme.txt file for further terms and conditions.
 									</else>
 								</if>
 							</then>
+							
 							<else>
 								<exec dir="./" executable="/bin/bash" output="${BUILD_LOGS}/IIBBuild0.@{barName}.log" failonerror="false" resultproperty="error.IIBBuild0.@{barName}">
 									<arg line=". ${MQSI_BIN}/mqsiprofile" />
@@ -144,6 +156,7 @@ See the readme.txt file for further terms and conditions.
 										</exec>
 
 									</then>
+									
 									<else>
 
 										<echo message="Building projects: ${barProjects} (with deployableFiles ${barDeployableFiles})" />
@@ -153,6 +166,7 @@ See the readme.txt file for further terms and conditions.
 										</exec>
 
 									</else>
+									
 								</if>
 
 								<antcall target="-checkIIBErrors">
@@ -164,19 +178,19 @@ See the readme.txt file for further terms and conditions.
 
 								<artifactFilePublisher buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" verbose="true" filePath="${BUILD_OUTPUT}/@{barName}.bar" label="@{barName} bar" />
 							</else>
+							
 						</if>
-
+						
 					</then>
+					
 					<else>
-
-						<startBuildActivity label="Skipping assembly of the @{barName} bar as it appears in the useExistingBars.list property" parentActivityId="${creatingBars}" autoComplete="true" buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${RTC_USER_ID}" passwordFile="${RTC_PASSWORD_FILE}" />
-						<echo message="NOTE: Skipping assembly of the @{barName} bar as it appears in the useExistingBars.list property" />
-
+						<startBuildActivity label="Skipping assembly of the @{barName} bar as it appears in the useExistingBars.list property"/>
 					</else>
+					
 				</if>
-
 			</sequential>
 		</for>
+		<endBuildActivity label="Assemble the bars"/>
 
 	</target>
 
