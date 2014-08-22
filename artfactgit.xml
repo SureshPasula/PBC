@@ -8,9 +8,7 @@
         <echo message="This is for checking the macrodef for labeling:@{inputValue}"/>
     </sequential>
    </macrodef>  
-  <startBuildActivity>
-     <attribute value="@{sending bar artifact message}"/>
-  </startBuildActivity>	 
+  <startBuildActivity inputValue="sending bar artifact message"/>
   <!--<echo>This is for bar file sending to the git repository</echo>
   <sequential>
    <echo>Loading the properties file</echo>
