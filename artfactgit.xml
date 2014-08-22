@@ -3,7 +3,8 @@
   <target name="run">
   
   <macrodef name="startBuildActivity">
-    <attribute name="inputValue"/> 	
+    <attribute name="inputValue"/> 
+    <element name="arg"/>	
     <sequential>
         <echo message="This is for checking the macrodef for labeling:@{inputValue}"/>
     </sequential>
