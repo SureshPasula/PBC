@@ -12,7 +12,7 @@
    <macrodef name="endBuildActivity">
     <attribute name="label"/> 	
     <sequential>
-        <echo message="End of the build Actvity:@{label}"/>
+        <echo message="End of the build Actvity of :@{label}"/>
     </sequential>
    </macrodef>    
    
