@@ -24,7 +24,7 @@ See the readme.txt file for further terms and conditions.
 
 	<target name="assembleOverrideAndDeployApp" depends="-init, -initAppDeploy, -assembleApp, -storeApp, -overrideApp, -deployApp, -deployAppProperties" />
 
-	<target name="-assembleApp" depends="">
+	<target name="-assembleApp">
 	
 	   <macrodef name="startBuildActivity">
 		    <attribute name="label"/> 	
