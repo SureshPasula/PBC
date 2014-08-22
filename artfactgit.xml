@@ -2,13 +2,22 @@
 
   <target name="run">
   
-  <macrodef name="startBuildActivity">
-    <attribute name="inputValue"/> 	
+   <macrodef name="startBuildActivity">
+    <attribute name="label"/> 	
     <sequential>
-        <echo message="This is for checking the macrodef for labeling:@{inputValue}"/>
+        <echo message="Starting of the build acitivity of :@{inputValue}"/>
     </sequential>
-   </macrodef>  
-  <startBuildActivity inputValue="sending bar artifact message"/>
+   </macrodef>
+   
+   <macrodef name="endBuildActivity">
+    <attribute name="label"/> 	
+    <sequential>
+        <echo message="End of the build Actvity:@{inputValue}"/>
+    </sequential>
+   </macrodef>    
+   
+  <startBuildActivity label="sending bar artifact message"/>
+  <endBuildActivity label="sending bar artifact message"/>
   <!--<echo>This is for bar file sending to the git repository</echo>
   <sequential>
    <echo>Loading the properties file</echo>
