@@ -5,14 +5,14 @@
    <macrodef name="startBuildActivity">
     <attribute name="label"/> 	
     <sequential>
-        <echo message="Starting of the build acitivity of :@{inputValue}"/>
+        <echo message="Starting of the build acitivity of :@{label}"/>
     </sequential>
    </macrodef>
    
    <macrodef name="endBuildActivity">
     <attribute name="label"/> 	
     <sequential>
-        <echo message="End of the build Actvity:@{inputValue}"/>
+        <echo message="End of the build Actvity:@{label}"/>
     </sequential>
    </macrodef>    
    
