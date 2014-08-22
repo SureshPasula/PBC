@@ -26,21 +26,22 @@ See the readme.txt file for further terms and conditions.
 
 	<target name="-assembleApp">
 	
-	   <macrodef name="startBuildActivity">
+	    <!-- Replacement of the RTC provieded custom ant task -->
+		
+	    <macrodef name="startBuildActivity">
 		    <attribute name="label"/> 	
             <sequential>
                <echo message="Starting of the build acitivity of :@{label}"/>
             </sequential>
-       </macrodef>
+        </macrodef>
    
-	   <macrodef name="endBuildActivity">
-		<attribute name="label"/> 	
-		<sequential>
-			<echo message="End of the build Actvity of :@{label}"/>
-		</sequential>
-	   </macrodef> 
+	    <macrodef name="endBuildActivity">
+		   <attribute name="label"/> 	
+		   <sequential>
+			  <echo message="End of the build Actvity of :@{label}"/>
+		   </sequential>
+	    </macrodef> 
 	
-       
 		<startBuildActivity label="Assemble the bars"/> 
 
 		<for list="${bars.list}" param="barName" delimiter=";">
